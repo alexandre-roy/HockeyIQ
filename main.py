@@ -1,3 +1,4 @@
+import scrape
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel
 from PyQt6.QtGui import QFont
@@ -20,4 +21,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    scrape()
 
