@@ -1,6 +1,6 @@
 """Script qui scrape les données et statistuqies de la ligue de hockey"""
 import requests
-from connection import sql
+from bd import sql
 
 def run():
     """Ficher complet"""
@@ -38,15 +38,15 @@ def extraire_stats(url):
 
     return stats_equipes
 
-def inserer_classement(p_categorie, p_saison,  p_equipes):
+def inserer_classement(categorie, saison,  equipes):
     """Insère le classement équipes dans la base de données"""
     position = 1
 
-    for equipe in p_equipes:
+    for equipe in equipes:
         equipe_dictionnaire = {
             "nom_equipe" : equipe["equipe"],
-            "categorie" : p_categorie,
-            "saison" : p_saison,
+            "categorie" : categorie,
+            "saison" : saison,
             "position" : position,
             "matchs_joues" : equipe["stats"]["gp"],
             "points" : equipe["stats"]["pts"],
@@ -79,15 +79,13 @@ def inserer_classement(p_categorie, p_saison,  p_equipes):
 
         position += 1
 
-def get_url(p_url):
+def get_url(url):
     """Retourne le contenu d'un fichier basé sur un url"""
     #pylint: disable = line-too-long
-    if p_url == "classement_b2_h2425":
+    if url == "classement_b2_h2425":
         return requests.get("https://admin.nbhpa.com/table_data.php?order=pts_tiebreak%20DESC&group=team_id&league_id=29&filters%5B%5D%5Bleague_id%5D=29&filters%5B%5D%5Bseason_id%5D=2858&category_id=5852&filters%5B%5D%5Bcategory_id%5D=5852&public_site=1&class=Standings&fields%5B%5D=override%3A%3Cdiv%20class%3D%27team_name_container%20relative%27%3E%3Cdiv%20class%3D%27center_vertical%20full_width%20d-flex%20align-items-center%27%3E%3Cdiv%20class%3D%27photo_container%20relative%20white_background%27%3E%3Cimg%20data-test%3D%27a%27%20class%3D%27team_photo%27%20src%3D%27https%3A%2F%2Fadmin.nbhpa.com%2F%7Bteam_pic%7D%27%3E%3C%2Fimg%3E%3C%2Fdiv%3E%7Bposition%7D.%20%26nbsp%3B%3Ca%20href%3D%27https%3A%2F%2Fwww.ddlc.ca%2Fequipes%2F%7Bteam_id%7D%27%20target%3D%27_parent%27%20class%3D%27flex-fill%20team_name%27%3E%7Bqualified%7D%7Bteam_name%7D%3C%2Fa%3E%7Blogoinvite%7D%3C%2Fdiv%3E%3C%2Fdiv%3E~~ultra_light_grey_background%20headcol%20py-0%20border-bottom&fields%5B%5D=gp~~text-right&fields%5B%5D=wins_tot~~text-right&fields%5B%5D=wins~~text-right&fields%5B%5D=so_wins~~text-right&fields%5B%5D=losses~~text-right&fields%5B%5D=so_loss~~text-right&fields%5B%5D=ot~~text-right&fields%5B%5D=pts~~text-right&fields%5B%5D=gf~~text-right&fields%5B%5D=ga~~text-right&fields%5B%5D=diff~~text-right&fields%5B%5D=pts_period~~text-right&fields%5B%5D=pts_game~~text-right&fields%5B%5D=pts_penalty~~text-right&fields%5B%5D=pts_gp~~text-right&page=1", timeout = 10)
-    if p_url == "classement_b3_h2425":
+    if url == "classement_b3_h2425":
         return requests.get("https://admin.nbhpa.com/table_data.php?order=pts_tiebreak%20DESC&group=team_id&league_id=29&filters%5B%5D%5Bleague_id%5D=29&filters%5B%5D%5Bseason_id%5D=2858&category_id=5194&filters%5B%5D%5Bcategory_id%5D=5194&public_site=1&class=Standings&fields%5B%5D=override%3A%3Cdiv%20class%3D%27team_name_container%20relative%27%3E%3Cdiv%20class%3D%27center_vertical%20full_width%20d-flex%20align-items-center%27%3E%3Cdiv%20class%3D%27photo_container%20relative%20white_background%27%3E%3Cimg%20data-test%3D%27a%27%20class%3D%27team_photo%27%20src%3D%27https%3A%2F%2Fadmin.nbhpa.com%2F%7Bteam_pic%7D%27%3E%3C%2Fimg%3E%3C%2Fdiv%3E%7Bposition%7D.%20%26nbsp%3B%3Ca%20href%3D%27https%3A%2F%2Fwww.ddlc.ca%2Fequipes%2F%7Bteam_id%7D%27%20target%3D%27_parent%27%20class%3D%27flex-fill%20team_name%27%3E%7Bqualified%7D%7Bteam_name%7D%3C%2Fa%3E%7Blogoinvite%7D%3C%2Fdiv%3E%3C%2Fdiv%3E~~ultra_light_grey_background%20headcol%20py-0%20border-bottom&fields%5B%5D=gp~~text-right&fields%5B%5D=wins_tot~~text-right&fields%5B%5D=wins~~text-right&fields%5B%5D=so_wins~~text-right&fields%5B%5D=losses~~text-right&fields%5B%5D=so_loss~~text-right&fields%5B%5D=ot~~text-right&fields%5B%5D=pts~~text-right&fields%5B%5D=gf~~text-right&fields%5B%5D=ga~~text-right&fields%5B%5D=diff~~text-right&fields%5B%5D=pts_period~~text-right&fields%5B%5D=pts_game~~text-right&fields%5B%5D=pts_penalty~~text-right&fields%5B%5D=pts_gp~~text-right&page=1", timeout = 10)
-    if p_url == "joueurs_b2_h2425":
-        return requests.get("https://admin.nbhpa.com/sites/site_stats_players.php?lang=fr", timeout = 10)
 
     return 1
 

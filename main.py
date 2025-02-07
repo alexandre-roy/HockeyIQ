@@ -1,12 +1,12 @@
 """Modules"""
 import sys
 import scrape
-import main_window
+import Interface.main_window as main_window
 
 
 def main():
     """Démmarage de l'application"""
-    scrape.run()
+    #scrape.run()
     app = main_window.QApplication(sys.argv)
     window = main_window.MainWindow()
     window.show()
