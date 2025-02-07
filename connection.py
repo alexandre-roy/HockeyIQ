@@ -1,9 +1,11 @@
-import mysql.connector
+"""Modules"""
 import contextlib
 import types
+import mysql.connector
 
 @contextlib.contextmanager
 def creer_connexion():
+    """Création de la connection"""
     conn = mysql.connector.connect(
         user="root",
         password="Alexrr253977!",
@@ -24,6 +26,7 @@ def creer_connexion():
 
 @contextlib.contextmanager
 def get_curseur(self):
+    """Obtenir le  curseur"""
     curseur = self.cursor(dictionary=True, buffered=True)
     try:
         yield curseur
@@ -31,6 +34,7 @@ def get_curseur(self):
         curseur.close()
 
 def sql(query, dictionnaire = None):
+    """Effectue des requêtes SQL"""
     with creer_connexion() as connection:
         with connection.get_curseur() as c:
             c.execute(query, dictionnaire)
