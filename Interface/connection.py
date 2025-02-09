@@ -6,7 +6,7 @@ from PyQt6.QtGui import QPixmap, QCursor
 from PyQt6.QtCore import Qt
 
 class Connection(QWidget):
-    """Page d'inscription"""
+    """Page de connection"""
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
@@ -23,9 +23,9 @@ class Connection(QWidget):
         carre_1.setStyleSheet("background-color: #BBBCC0;"
                               "border-radius: 5px;")
 
-        carre_2 = QLabel(self)
-        carre_2.setGeometry(200, 200, 210, 30)
-        carre_2.setStyleSheet("background-color: #BBBCC0;")
+        carre_dessous = QLabel(self)
+        carre_dessous.setGeometry(200, 200, 210, 30)
+        carre_dessous.setStyleSheet("background-color: #BBBCC0;")
 
         carre_rond = QLabel(self)
         carre_rond.setGeometry(390, 190, 210, 40)
@@ -60,10 +60,10 @@ class Connection(QWidget):
                               "border-radius: 5px;")
 
         txt_email_connection = QLineEdit(self)
-        txt_email_connection.setGeometry(190, 240, 420, 40)
+        txt_email_connection.setGeometry(185, 235, 430, 50)
         txt_email_connection.setStyleSheet("background-color: #D9D9D9;"
                               "border-radius: 5px;"
-                              "padding: 7px;"
+                              "padding: 5px;"
                               "color: #2F3038;"
                               "font-weight: Bold;")
         txt_email_connection.setPlaceholderText("ADRESSE COURRIEL")
@@ -76,10 +76,10 @@ class Connection(QWidget):
                               "border-radius: 5px;")
 
         txt_pwd_connection = QLineEdit(self)
-        txt_pwd_connection.setGeometry(190, 325, 420, 40)
+        txt_pwd_connection.setGeometry(185, 320, 430, 50)
         txt_pwd_connection.setStyleSheet("background-color: #D9D9D9;"
                               "border-radius: 5px;"
-                              "padding: 7px;"
+                              "padding: 5px;"
                               "color: #2F3038;"
                               "font-weight: Bold;")
         txt_pwd_connection.setPlaceholderText("MOT DE PASSE")

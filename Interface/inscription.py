@@ -10,26 +10,21 @@ class Inscription(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
-        self.setStyleSheet("background-color: red;")
 
-        self.initialiser_page_login()
+        self.initialiser_page_inscription()
 
-    def initialiser_page_login(self):
+    def initialiser_page_inscription(self):
         """Interface graphique"""
         logo_label = QLabel(self)
         logo_label.setGeometry(177, 40, 447, 67)
 
-        carre_1 = QLabel(self)
-        carre_1.setGeometry(180, 150, 210, 100)
-        carre_1.setStyleSheet("background-color: #BBBCC0;"
-                              "border-radius: 5px;")
-
-        carre_2 = QLabel(self)
-        carre_2.setGeometry(200, 200, 210, 30)
-        carre_2.setStyleSheet("background-color: #BBBCC0;")
+        carre_dessous = QLabel(self)
+        carre_dessous.setGeometry(410, 200, 210, 90)
+        carre_dessous.setStyleSheet("background-color: #BBBCC0;"
+                                    "border-radius: 5px;")
 
         carre_rond = QLabel(self)
-        carre_rond.setGeometry(390, 190, 210, 40)
+        carre_rond.setGeometry(210, 190, 200, 40)
         carre_rond.setStyleSheet("background-color: #F5F5F5;"
                               "border-radius: 8px;")
 
@@ -56,35 +51,62 @@ class Inscription(QWidget):
         btn_inscription.setText("INSCRIPTION")
 
         carre_email = QLabel(self)
-        carre_email.setGeometry(180, 230, 440, 60)
+        carre_email.setGeometry(180, 230, 210, 60)
         carre_email.setStyleSheet("background-color: #BBBCC0;"
                               "border-radius: 5px;")
 
-        txt_email_connection = QLineEdit(self)
-        txt_email_connection.setGeometry(190, 240, 420, 40)
-        txt_email_connection.setStyleSheet("background-color: #D9D9D9;"
+        txt_email_inscription = QLineEdit(self)
+        txt_email_inscription.setGeometry(185, 235, 200, 50)
+        txt_email_inscription.setStyleSheet("background-color: #D9D9D9;"
                               "border-radius: 5px;"
-                              "padding: 7px;"
+                              "padding: 5px;"
                               "color: #2F3038;"
                               "font-weight: Bold;")
-        txt_email_connection.setPlaceholderText("ADRESSE COURRIEL")
-        txt_email_connection.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+        txt_email_inscription.setPlaceholderText("ADRESSE COURRIEL")
+        txt_email_inscription.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+
+        txt_nom_inscription = QLineEdit(self)
+        txt_nom_inscription.setGeometry(415, 235, 200, 50)
+        txt_nom_inscription.setStyleSheet("background-color: #D9D9D9;"
+                              "border-radius: 5px;"
+                              "padding: 5px;"
+                              "color: #2F3038;"
+                              "font-weight: Bold;")
+        txt_nom_inscription.setPlaceholderText("PRÉNOM")
+        txt_nom_inscription.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
 
         carre_pwd = QLabel(self)
-        carre_pwd.setGeometry(180, 315, 440, 60)
+        carre_pwd.setGeometry(180, 315, 210, 60)
         carre_pwd.setStyleSheet("background-color: #BBBCC0;"
                               "border-radius: 5px;")
 
-        txt_pwd_connection = QLineEdit(self)
-        txt_pwd_connection.setGeometry(190, 325, 420, 40)
-        txt_pwd_connection.setStyleSheet("background-color: #D9D9D9;"
+        txt_pwd_inscription = QLineEdit(self)
+        txt_pwd_inscription.setGeometry(185, 320, 200, 50)
+        txt_pwd_inscription.setStyleSheet("background-color: #D9D9D9;"
                               "border-radius: 5px;"
-                              "padding: 7px;"
+                              "padding: 5px;"
                               "color: #2F3038;"
                               "font-weight: Bold;")
-        txt_pwd_connection.setPlaceholderText("MOT DE PASSE")
-        txt_pwd_connection.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
-        txt_pwd_connection.setEchoMode(QLineEdit.EchoMode.Password)
+        txt_pwd_inscription.setPlaceholderText("MOT DE PASSE")
+        txt_pwd_inscription.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+        txt_pwd_inscription.setEchoMode(QLineEdit.EchoMode.Password)
+
+        carre_pwd_confirm = QLabel(self)
+        carre_pwd_confirm.setGeometry(410, 315, 210, 60)
+        carre_pwd_confirm.setStyleSheet("background-color: #BBBCC0;"
+                              "border-radius: 5px;")
+
+        txt_pwd_inscription_confirm = QLineEdit(self)
+        txt_pwd_inscription_confirm.setGeometry(415, 320, 200, 50)
+        txt_pwd_inscription_confirm.setStyleSheet("background-color: #D9D9D9;"
+                              "border-radius: 5px;"
+                              "padding: 5px;"
+                              "color: #2F3038;"
+                              "font-weight: Bold;")
+        txt_pwd_inscription_confirm.setPlaceholderText("MOT DE PASSE x2")
+        txt_pwd_inscription_confirm.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+        txt_pwd_inscription_confirm.setEchoMode(QLineEdit.EchoMode.Password)
+
 
         btn_go = QPushButton(self)
         btn_go.setGeometry(180, 400, 440, 60)
