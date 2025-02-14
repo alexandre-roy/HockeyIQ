@@ -10,7 +10,6 @@ class Connection(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
-
         self.initialiser_page_connection()
 
     def initialiser_page_connection(self):

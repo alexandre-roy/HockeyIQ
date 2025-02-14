@@ -5,8 +5,9 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow, QStackedWidget
 from PyQt6.QtGui import QPixmap, QCursor
 from PyQt6.QtCore import Qt
-from Interface.connection import Connection
-from Interface.inscription import Inscription
+from connection import Connection
+from inscription import Inscription
+from overview import Overview
 
 class MainWindow(QMainWindow):
     """Fenêtre d'accueil / login"""
@@ -19,6 +20,7 @@ class MainWindow(QMainWindow):
 
         self.connection = Connection(self)
         self.inscription = Inscription(self)
+        self.overview = Overview(self)
 
         self.setCentralWidget(self.connection)
 
@@ -31,3 +33,8 @@ class MainWindow(QMainWindow):
         """Affiche la page d'inscription"""
         self.inscription = Inscription(self)
         self.setCentralWidget(self.inscription)
+
+    def afficher_overview(self):
+        """Affiche la page d'overview"""
+        self.overview = Overview(self)
+        self.setCentralWidget(self.overview)

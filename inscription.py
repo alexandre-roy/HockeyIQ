@@ -1,16 +1,17 @@
 #pylint: disable = no-name-in-module
 
 """Modules"""
+import re
 from PyQt6.QtWidgets import QLabel, QPushButton, QLineEdit, QWidget
 from PyQt6.QtGui import QPixmap, QCursor
 from PyQt6.QtCore import Qt
+import bd
 
 class Inscription(QWidget):
     """Page d'inscription"""
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
-
         self.initialiser_page_inscription()
 
     def initialiser_page_inscription(self):
@@ -50,10 +51,18 @@ class Inscription(QWidget):
                               "font-weight: Bold;")
         btn_inscription.setText("INSCRIPTION")
 
+        self.erreur_email = QLabel(self)
+        self.erreur_email.setGeometry(185, 290, 440, 20)
+        self.erreur_email.setStyleSheet("color: #E01507;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.erreur_email.setText("Adresse courriel invalide")
+        self.erreur_email.hide()
+
         carre_email = QLabel(self)
         carre_email.setGeometry(180, 230, 210, 60)
         carre_email.setStyleSheet("background-color: #BBBCC0;"
-                              "border-radius: 5px;")
+                            "border-radius: 5px;")
 
         txt_email_inscription = QLineEdit(self)
         txt_email_inscription.setGeometry(185, 235, 200, 50)
@@ -64,6 +73,14 @@ class Inscription(QWidget):
                               "font-weight: Bold;")
         txt_email_inscription.setPlaceholderText("ADRESSE COURRIEL")
         txt_email_inscription.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+
+        self.erreur_nom = QLabel(self)
+        self.erreur_nom.setGeometry(415, 290, 440, 20)
+        self.erreur_nom.setStyleSheet("color: #E01507;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.erreur_nom.setText("2 caractères minimum")
+        self.erreur_nom.hide()
 
         txt_nom_inscription = QLineEdit(self)
         txt_nom_inscription.setGeometry(415, 235, 200, 50)
@@ -80,6 +97,14 @@ class Inscription(QWidget):
         carre_pwd.setStyleSheet("background-color: #BBBCC0;"
                               "border-radius: 5px;")
 
+        self.erreur_pwd = QLabel(self)
+        self.erreur_pwd.setGeometry(185, 375, 200, 20)
+        self.erreur_pwd.setStyleSheet("color: #E01507;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.erreur_pwd.setText("5 caractères et un chiffre minimum")
+        self.erreur_pwd.hide()
+
         txt_pwd_inscription = QLineEdit(self)
         txt_pwd_inscription.setGeometry(185, 320, 200, 50)
         txt_pwd_inscription.setStyleSheet("background-color: #D9D9D9;"
@@ -95,6 +120,14 @@ class Inscription(QWidget):
         carre_pwd_confirm.setGeometry(410, 315, 210, 60)
         carre_pwd_confirm.setStyleSheet("background-color: #BBBCC0;"
                               "border-radius: 5px;")
+
+        self.erreur_pwd_confirm = QLabel(self)
+        self.erreur_pwd_confirm.setGeometry(415, 375, 200, 20)
+        self.erreur_pwd_confirm.setStyleSheet("color: #E01507;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.erreur_pwd_confirm.setText("Doit être identique au premier")
+        self.erreur_pwd_confirm.hide()
 
         txt_pwd_inscription_confirm = QLineEdit(self)
         txt_pwd_inscription_confirm.setGeometry(415, 320, 200, 50)
@@ -118,8 +151,10 @@ class Inscription(QWidget):
                               "font-weight: Bold;")
         btn_go.setText("GO")
         btn_go.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        btn_go.clicked.connect(self.btn_go_click)
-
+        btn_go.clicked.connect(lambda: self.btn_go_click(txt_email_inscription.text(),
+                                                txt_nom_inscription.text(),
+                                                txt_pwd_inscription.text(),
+                                                txt_pwd_inscription_confirm.text()))
 
         logo = QPixmap("resources/logo.png")
         logo_label.setPixmap(logo)
@@ -129,5 +164,52 @@ class Inscription(QWidget):
         """Action lors du clique sur le bouton CONNECTION"""
         self.main_window.afficher_connection()
 
-    def btn_go_click(self):
+    def btn_go_click(self, email, prenom, pwd, pwd2):
         """Action de cliquer sur le bouton GO"""
+        valide = True
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        pwd_regex = r'^(?=.*\d)[A-Za-z\d@#$%^&+=!]{5,}$'
+
+        if not re.match(email_regex, email):
+            valide = False
+            self.erreur_email.show()
+        else:
+            self.erreur_email.hide()
+
+        if len(prenom) < 2 or prenom.isspace():
+            valide = False
+            self.erreur_nom.show()
+        else:
+            self.erreur_nom.hide()
+
+        if not re.match(pwd_regex, pwd):
+            valide = False
+            print("pwd is not valid")
+            self.erreur_pwd.show()
+        else:
+            self.erreur_pwd.hide()
+
+        if pwd2 != pwd:
+            valide = False
+            self.erreur_pwd_confirm.show()
+        else:
+            self.erreur_pwd.hide()
+
+        utilisateur_dictionnaire = {
+            "prenom" : prenom,
+            "email" : email,
+            "mot_de_passe" : pwd
+        }
+
+        with bd.creer_connexion() as connection:
+            with connection.get_curseur() as c:
+                c.execute("SELECT * FROM utilisateurs WHERE email = %(email)s",
+                           utilisateur_dictionnaire)
+                if c.fetchone():
+                    valide = False
+                    print("email already exists")
+
+        if valide:
+            bd.sql("INSERT INTO utilisateurs (prenom, email, mot_de_passe) VALUES" +
+                "(%(prenom)s, %(email)s,  SHA2(%(mot_de_passe)s, 256))", utilisateur_dictionnaire)
+            self.main_window.afficher_overview()
