@@ -1,9 +1,11 @@
 #pylint: disable = no-name-in-module
 
 """Modules"""
+import re
 from PyQt6.QtWidgets import QLabel, QPushButton, QLineEdit, QWidget
 from PyQt6.QtGui import QPixmap, QCursor
 from PyQt6.QtCore import Qt
+import bd
 
 class Connection(QWidget):
     """Page de connection"""
@@ -68,6 +70,29 @@ class Connection(QWidget):
         txt_email_connection.setPlaceholderText("ADRESSE COURRIEL")
         txt_email_connection.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
 
+        self.erreur_email = QLabel(self)
+        self.erreur_email.setGeometry(185, 290, 430, 20)
+        self.erreur_email.setStyleSheet("color: #e8873d;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.erreur_email.setText("Cette adresse courriel n'est pas lié à un compte")
+        self.erreur_email.hide()
+
+        self.erreur_email_regex = QLabel(self)
+        self.erreur_email_regex.setGeometry(185, 290, 430, 20)
+        self.erreur_email_regex.setStyleSheet("color: #e8873d;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.erreur_email_regex.setText("Adresse courriel invalide")
+        self.erreur_email_regex.hide()
+
+        self.veuillez_remplir_email = QLabel(self)
+        self.veuillez_remplir_email.setGeometry(185, 290, 430, 20)
+        self.veuillez_remplir_email.setStyleSheet("color: #e8873d;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.veuillez_remplir_email.setText("Veuillez remplir ce champ")
+        self.veuillez_remplir_email.hide()
 
         carre_pwd = QLabel(self)
         carre_pwd.setGeometry(180, 315, 440, 60)
@@ -85,6 +110,22 @@ class Connection(QWidget):
         txt_pwd_connection.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
         txt_pwd_connection.setEchoMode(QLineEdit.EchoMode.Password)
 
+        self.veuillez_remplir_pwd = QLabel(self)
+        self.veuillez_remplir_pwd.setGeometry(185, 375, 200, 20)
+        self.veuillez_remplir_pwd.setStyleSheet("color: #e8873d;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.veuillez_remplir_pwd.setText("Veuillez remplir ce champ")
+        self.veuillez_remplir_pwd.hide()
+
+        self.erreur_pwd = QLabel(self)
+        self.erreur_pwd.setGeometry(185, 375, 200, 20)
+        self.erreur_pwd.setStyleSheet("color: #e8873d;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.erreur_pwd.setText("Mot de passe incorrect")
+        self.erreur_pwd.hide()
+
         btn_go = QPushButton(self)
         btn_go.setGeometry(180, 400, 440, 60)
         btn_go.setStyleSheet("background-color: #8C322D;"
@@ -95,7 +136,8 @@ class Connection(QWidget):
                               "font-weight: Bold;")
         btn_go.setText("GO")
         btn_go.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        btn_go.clicked.connect(self.btn_go_click)
+        btn_go.clicked.connect(lambda: self.btn_go_click(txt_email_connection.text(),
+                                                         txt_pwd_connection.text()))
 
 
         logo = QPixmap("resources/logo.png")
@@ -109,5 +151,58 @@ class Connection(QWidget):
     def btn_connection_click(self):
         """Action lors du clique sur le bouton CONNECTION"""
 
-    def btn_go_click(self):
+    def btn_go_click(self, email, pwd):
         """Action de cliquer sur le bouton GO"""
+        valide = True
+
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+        self.veuillez_remplir_email.hide()
+        self.veuillez_remplir_pwd.hide()
+        self.erreur_email.hide()
+        self.erreur_email_regex.hide()
+        self.erreur_pwd.hide()
+
+        if not email or email.isspace():
+            valide = False
+            self.veuillez_remplir_email.show()
+        elif not re.match(email_regex, email):
+            valide = False
+            self.erreur_email_regex.show()
+
+        if not pwd or pwd.isspace():
+            valide = False
+            self.veuillez_remplir_pwd.show()
+
+        utilisateur_dictionnaire = {
+            "email" : email,
+            "mot_de_passe" : pwd
+        }
+
+        with bd.creer_connexion() as connection:
+            with connection.get_curseur() as c:
+                c.execute("SELECT * FROM utilisateurs WHERE email = %(email)s",
+                           utilisateur_dictionnaire)
+                if not c.fetchone():
+                    valide = False
+                    self.erreur_email.show()
+
+        with bd.creer_connexion() as connection:
+            with connection.get_curseur() as c:
+                c.execute("SELECT * FROM utilisateurs WHERE email = %(email)s " +
+                          "AND mot_de_passe != (SHA2(%(mot_de_passe)s, 256))",
+                           utilisateur_dictionnaire)
+                if c.fetchone():
+                    valide = False
+                    self.erreur_pwd.show()
+
+        with bd.creer_connexion() as connection:
+            with connection.get_curseur() as c:
+                c.execute("SELECT * FROM utilisateurs WHERE email = %(email)s " +
+                          "AND mot_de_passe = (SHA2(%(mot_de_passe)s, 256))",
+                           utilisateur_dictionnaire)
+                if c.fetchone():
+                    valide = True
+
+        if valide:
+            self.main_window.afficher_overview()

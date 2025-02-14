@@ -53,11 +53,27 @@ class Inscription(QWidget):
 
         self.erreur_email = QLabel(self)
         self.erreur_email.setGeometry(185, 290, 440, 20)
-        self.erreur_email.setStyleSheet("color: #E01507;"
+        self.erreur_email.setStyleSheet("color: #e8873d;"
                                    "font-size: 11px;"
                                    "font-weight: Bold;")
         self.erreur_email.setText("Adresse courriel invalide")
         self.erreur_email.hide()
+
+        self.veuillez_remplir_email = QLabel(self)
+        self.veuillez_remplir_email.setGeometry(185, 290, 440, 20)
+        self.veuillez_remplir_email.setStyleSheet("color: #e8873d;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.veuillez_remplir_email.setText("Veuillez remplir ce champ")
+        self.veuillez_remplir_email.hide()
+
+        self.email_deja_utilise = QLabel(self)
+        self.email_deja_utilise.setGeometry(185, 290, 440, 20)
+        self.email_deja_utilise.setStyleSheet("color: #e8873d;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.email_deja_utilise.setText("Courriel déjà utilisé")
+        self.email_deja_utilise.hide()
 
         carre_email = QLabel(self)
         carre_email.setGeometry(180, 230, 210, 60)
@@ -76,11 +92,19 @@ class Inscription(QWidget):
 
         self.erreur_nom = QLabel(self)
         self.erreur_nom.setGeometry(415, 290, 440, 20)
-        self.erreur_nom.setStyleSheet("color: #E01507;"
+        self.erreur_nom.setStyleSheet("color: #e8873d;"
                                    "font-size: 11px;"
                                    "font-weight: Bold;")
         self.erreur_nom.setText("2 caractères minimum")
         self.erreur_nom.hide()
+
+        self.veuillez_remplir_nom = QLabel(self)
+        self.veuillez_remplir_nom.setGeometry(415, 290, 440, 20)
+        self.veuillez_remplir_nom.setStyleSheet("color: #e8873d;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.veuillez_remplir_nom.setText("Veuillez remplir ce champ")
+        self.veuillez_remplir_nom.hide()
 
         txt_nom_inscription = QLineEdit(self)
         txt_nom_inscription.setGeometry(415, 235, 200, 50)
@@ -99,11 +123,19 @@ class Inscription(QWidget):
 
         self.erreur_pwd = QLabel(self)
         self.erreur_pwd.setGeometry(185, 375, 200, 20)
-        self.erreur_pwd.setStyleSheet("color: #E01507;"
+        self.erreur_pwd.setStyleSheet("color: #e8873d;"
                                    "font-size: 11px;"
                                    "font-weight: Bold;")
         self.erreur_pwd.setText("5 caractères et un chiffre minimum")
         self.erreur_pwd.hide()
+
+        self.veuillez_remplir_pwd = QLabel(self)
+        self.veuillez_remplir_pwd.setGeometry(185, 375, 200, 20)
+        self.veuillez_remplir_pwd.setStyleSheet("color: #e8873d;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.veuillez_remplir_pwd.setText("Veuillez remplir ce champ")
+        self.veuillez_remplir_pwd.hide()
 
         txt_pwd_inscription = QLineEdit(self)
         txt_pwd_inscription.setGeometry(185, 320, 200, 50)
@@ -123,11 +155,19 @@ class Inscription(QWidget):
 
         self.erreur_pwd_confirm = QLabel(self)
         self.erreur_pwd_confirm.setGeometry(415, 375, 200, 20)
-        self.erreur_pwd_confirm.setStyleSheet("color: #E01507;"
+        self.erreur_pwd_confirm.setStyleSheet("color: #e8873d;"
                                    "font-size: 11px;"
                                    "font-weight: Bold;")
         self.erreur_pwd_confirm.setText("Doit être identique au premier")
         self.erreur_pwd_confirm.hide()
+
+        self.veuillez_remplir_pwd_2 = QLabel(self)
+        self.veuillez_remplir_pwd_2.setGeometry(415, 375, 200, 20)
+        self.veuillez_remplir_pwd_2.setStyleSheet("color: #e8873d;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.veuillez_remplir_pwd_2.setText("Veuillez remplir ce champ")
+        self.veuillez_remplir_pwd_2.hide()
 
         txt_pwd_inscription_confirm = QLineEdit(self)
         txt_pwd_inscription_confirm.setGeometry(415, 320, 200, 50)
@@ -139,6 +179,7 @@ class Inscription(QWidget):
         txt_pwd_inscription_confirm.setPlaceholderText("MOT DE PASSE x2")
         txt_pwd_inscription_confirm.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
         txt_pwd_inscription_confirm.setEchoMode(QLineEdit.EchoMode.Password)
+
 
 
         btn_go = QPushButton(self)
@@ -156,6 +197,14 @@ class Inscription(QWidget):
                                                 txt_pwd_inscription.text(),
                                                 txt_pwd_inscription_confirm.text()))
 
+        self.creation_success = QLabel(self)
+        self.creation_success.setGeometry(330, 460, 200, 20)
+        self.creation_success.setStyleSheet("color: #2bb537;"
+                                   "font-size: 11px;"
+                                   "font-weight: Bold;")
+        self.creation_success.setText("Compte créé avec succès!")
+        self.creation_success.hide()
+
         logo = QPixmap("resources/logo.png")
         logo_label.setPixmap(logo)
         logo_label.setScaledContents(True)
@@ -170,30 +219,46 @@ class Inscription(QWidget):
         email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         pwd_regex = r'^(?=.*\d)[A-Za-z\d@#$%^&+=!]{5,}$'
 
-        if not re.match(email_regex, email):
+        self.veuillez_remplir_email.hide()
+        self.veuillez_remplir_nom.hide()
+        self.veuillez_remplir_pwd.hide()
+        self.veuillez_remplir_pwd_2.hide()
+
+        self.erreur_email.hide()
+        self.email_deja_utilise.hide()
+        self.erreur_nom.hide()
+        self.erreur_pwd.hide()
+        self.erreur_pwd_confirm.hide()
+
+        self.creation_success.hide()
+
+        if not email or email.isspace():
+            valide = False
+            self.veuillez_remplir_email.show()
+        elif not re.match(email_regex, email):
             valide = False
             self.erreur_email.show()
-        else:
-            self.erreur_email.hide()
 
-        if len(prenom) < 2 or prenom.isspace():
+        if not prenom or prenom.isspace():
+            valide = False
+            self.veuillez_remplir_nom.show()
+        elif len(prenom) < 2:
             valide = False
             self.erreur_nom.show()
-        else:
-            self.erreur_nom.hide()
 
-        if not re.match(pwd_regex, pwd):
+        if not pwd or pwd.isspace():
             valide = False
-            print("pwd is not valid")
+            self.veuillez_remplir_pwd.show()
+        elif not re.match(pwd_regex, pwd):
+            valide = False
             self.erreur_pwd.show()
-        else:
-            self.erreur_pwd.hide()
 
-        if pwd2 != pwd:
+        if not pwd2 or pwd2.isspace():
+            valide = False
+            self.veuillez_remplir_pwd_2.show()
+        elif pwd2 != pwd:
             valide = False
             self.erreur_pwd_confirm.show()
-        else:
-            self.erreur_pwd.hide()
 
         utilisateur_dictionnaire = {
             "prenom" : prenom,
@@ -207,9 +272,9 @@ class Inscription(QWidget):
                            utilisateur_dictionnaire)
                 if c.fetchone():
                     valide = False
-                    print("email already exists")
+                    self.email_deja_utilise.show()
 
         if valide:
             bd.sql("INSERT INTO utilisateurs (prenom, email, mot_de_passe) VALUES" +
                 "(%(prenom)s, %(email)s,  SHA2(%(mot_de_passe)s, 256))", utilisateur_dictionnaire)
-            self.main_window.afficher_overview()
+            self.creation_success.show()
