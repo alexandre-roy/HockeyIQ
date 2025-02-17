@@ -14,7 +14,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setGeometry(335, 250, 800, 500)
-        self.setStyleSheet("background-color: #F5F5F5;")
+        self.setStyleSheet("background-color: #C9E1F7;")
         self.setFixedSize(800, 500)
         self.stacked_widget = QStackedWidget()
 

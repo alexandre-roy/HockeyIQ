@@ -3,7 +3,7 @@
 """Modules"""
 import re
 from PyQt6.QtWidgets import QLabel, QPushButton, QLineEdit, QWidget
-from PyQt6.QtGui import QPixmap, QCursor
+from PyQt6.QtGui import QPixmap, QCursor, QFontDatabase, QFont
 from PyQt6.QtCore import Qt
 import bd
 
@@ -16,43 +16,50 @@ class Inscription(QWidget):
 
     def initialiser_page_inscription(self):
         """Interface graphique"""
+        QFontDatabase.addApplicationFont("Resources/Fonts/Jersey25-Regular.ttf")
+        QFontDatabase.addApplicationFont("Resources/Fonts/Inter-VariableFont_opsz,wght.ttf")
+
+        jersey25_40 = QFont("jersey 25", 40)
+        jersey25_16 = QFont("jersey 25", 16)
+
         logo_label = QLabel(self)
-        logo_label.setGeometry(177, 40, 447, 67)
+        logo_label.setGeometry(100, 20, 600, 140)
 
-        carre_dessous = QLabel(self)
-        carre_dessous.setGeometry(410, 200, 210, 90)
-        carre_dessous.setStyleSheet("background-color: #BBBCC0;"
-                                    "border-radius: 5px;")
-
-        carre_rond = QLabel(self)
-        carre_rond.setGeometry(210, 190, 200, 40)
-        carre_rond.setStyleSheet("background-color: #F5F5F5;"
-                              "border-radius: 8px;")
+        btn_connection_bg = QPushButton(self)
+        btn_connection_bg.setGeometry(175, 170, 220, 50)
+        btn_connection_bg.setFont(jersey25_40)
+        btn_connection_bg.setStyleSheet("background-color: #f2bd41;"
+                                    "border-radius: 0px;")
+        btn_connection_bg.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        btn_connection_bg.clicked.connect(self.btn_connection_click)
 
         btn_connection = QPushButton(self)
-        btn_connection.setGeometry(180, 150, 210, 60)
-        btn_connection.setStyleSheet("background-color: #7A97B8;"
-                              "border-radius: 5px;"
-                              "color: #F5F5F5;"
-                              "font-family: Futura;"
-                              "font-size: 24px;"
-                              "font-weight: Bold;")
+        btn_connection.setGeometry(180, 165, 210, 60)
+        btn_connection.setFont(jersey25_40)
+        btn_connection.setStyleSheet("background-color: #f2bd41;"
+                                    "border-radius: 0px;"
+                                    "color: #2F3038;")
         btn_connection.setText("CONNECTION")
         btn_connection.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         btn_connection.clicked.connect(self.btn_connection_click)
 
+
+        btn_inscription_bg = QPushButton(self)
+        btn_inscription_bg.setGeometry(405, 170, 220, 50)
+        btn_inscription_bg.setStyleSheet("background-color: #BBBCC0;"
+                              "border-radius: 0px;")
+        btn_inscription_bg.setText("INSCRIPTION")
+
         btn_inscription = QPushButton(self)
-        btn_inscription.setGeometry(410, 150, 210, 60)
+        btn_inscription.setGeometry(410, 165, 210, 60)
+        btn_inscription.setFont(jersey25_40)
         btn_inscription.setStyleSheet("background-color: #BBBCC0;"
-                              "border-radius: 5px;"
-                              "color: #2F3038;"
-                              "font-family: Futura;"
-                              "font-size: 24px;"
-                              "font-weight: Bold;")
+                              "border-radius: 0px;"
+                              "color: #2F3038;")
         btn_inscription.setText("INSCRIPTION")
 
         self.erreur_email = QLabel(self)
-        self.erreur_email.setGeometry(185, 290, 440, 20)
+        self.erreur_email.setGeometry(185, 300, 440, 20)
         self.erreur_email.setStyleSheet("color: #e8873d;"
                                    "font-size: 11px;"
                                    "font-weight: Bold;")
@@ -60,7 +67,7 @@ class Inscription(QWidget):
         self.erreur_email.hide()
 
         self.veuillez_remplir_email = QLabel(self)
-        self.veuillez_remplir_email.setGeometry(185, 290, 440, 20)
+        self.veuillez_remplir_email.setGeometry(185, 300, 440, 20)
         self.veuillez_remplir_email.setStyleSheet("color: #e8873d;"
                                    "font-size: 11px;"
                                    "font-weight: Bold;")
@@ -68,30 +75,40 @@ class Inscription(QWidget):
         self.veuillez_remplir_email.hide()
 
         self.email_deja_utilise = QLabel(self)
-        self.email_deja_utilise.setGeometry(185, 290, 440, 20)
+        self.email_deja_utilise.setGeometry(185, 300, 440, 20)
         self.email_deja_utilise.setStyleSheet("color: #e8873d;"
                                    "font-size: 11px;"
                                    "font-weight: Bold;")
         self.email_deja_utilise.setText("Courriel déjà utilisé")
         self.email_deja_utilise.hide()
 
+        carre_email_bg = QLabel(self)
+        carre_email_bg.setGeometry(175, 250, 220, 50)
+        carre_email_bg.setStyleSheet("background-color: #BBBCC0;"
+                            "border-radius: 0px;")
+
         carre_email = QLabel(self)
-        carre_email.setGeometry(180, 230, 210, 60)
+        carre_email.setGeometry(180, 245, 210, 60)
         carre_email.setStyleSheet("background-color: #BBBCC0;"
-                            "border-radius: 5px;")
+                            "border-radius: 0px;")
+
+        txt_email_inscription_bg = QLabel(self)
+        txt_email_inscription_bg.setGeometry(180, 255, 210, 40)
+        txt_email_inscription_bg.setStyleSheet("background-color: #D9D9D9;"
+                              "border-radius: 0px;")
 
         txt_email_inscription = QLineEdit(self)
-        txt_email_inscription.setGeometry(185, 235, 200, 50)
+        txt_email_inscription.setGeometry(185, 250, 200, 50)
+        txt_email_inscription.setFont(jersey25_16)
         txt_email_inscription.setStyleSheet("background-color: #D9D9D9;"
-                              "border-radius: 5px;"
-                              "padding: 5px;"
-                              "color: #2F3038;"
-                              "font-weight: Bold;")
+                              "border-radius: 0px;"
+                              "padding: 0px;"
+                              "color: #2F3038;")
         txt_email_inscription.setPlaceholderText("ADRESSE COURRIEL")
         txt_email_inscription.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
 
         self.erreur_nom = QLabel(self)
-        self.erreur_nom.setGeometry(415, 290, 440, 20)
+        self.erreur_nom.setGeometry(415, 300, 440, 20)
         self.erreur_nom.setStyleSheet("color: #e8873d;"
                                    "font-size: 11px;"
                                    "font-weight: Bold;")
@@ -99,30 +116,49 @@ class Inscription(QWidget):
         self.erreur_nom.hide()
 
         self.veuillez_remplir_nom = QLabel(self)
-        self.veuillez_remplir_nom.setGeometry(415, 290, 440, 20)
+        self.veuillez_remplir_nom.setGeometry(415, 300, 440, 20)
         self.veuillez_remplir_nom.setStyleSheet("color: #e8873d;"
                                    "font-size: 11px;"
                                    "font-weight: Bold;")
         self.veuillez_remplir_nom.setText("Veuillez remplir ce champ")
         self.veuillez_remplir_nom.hide()
 
+        carre_nom_bg = QLabel(self)
+        carre_nom_bg.setGeometry(405, 250, 220, 50)
+        carre_nom_bg.setStyleSheet("background-color: #BBBCC0;"
+                                    "border-radius: 0px;")
+
+        carre_nom = QLabel(self)
+        carre_nom.setGeometry(410, 245, 210, 60)
+        carre_nom.setStyleSheet("background-color: #BBBCC0;"
+                                    "border-radius: 0px;")
+
+        txt_nom_inscription_bg = QLabel(self)
+        txt_nom_inscription_bg.setGeometry(410, 255, 210, 40)
+        txt_nom_inscription_bg.setStyleSheet("background-color: #D9D9D9;"
+                              "border-radius: 0px;")
+
         txt_nom_inscription = QLineEdit(self)
-        txt_nom_inscription.setGeometry(415, 235, 200, 50)
+        txt_nom_inscription.setGeometry(415, 250, 200, 50)
+        txt_nom_inscription.setFont(jersey25_16)
         txt_nom_inscription.setStyleSheet("background-color: #D9D9D9;"
-                              "border-radius: 5px;"
-                              "padding: 5px;"
-                              "color: #2F3038;"
-                              "font-weight: Bold;")
+                              "border-radius: 0px;"
+                              "color: #2F3038;")
         txt_nom_inscription.setPlaceholderText("PRÉNOM")
         txt_nom_inscription.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
 
+        carre_pwd_bg = QLabel(self)
+        carre_pwd_bg.setGeometry(175, 330, 220, 50)
+        carre_pwd_bg.setStyleSheet("background-color: #BBBCC0;"
+                              "border-radius: 0px;")
+
         carre_pwd = QLabel(self)
-        carre_pwd.setGeometry(180, 315, 210, 60)
+        carre_pwd.setGeometry(180, 325, 210, 60)
         carre_pwd.setStyleSheet("background-color: #BBBCC0;"
-                              "border-radius: 5px;")
+                              "border-radius: 0px;")
 
         self.erreur_pwd = QLabel(self)
-        self.erreur_pwd.setGeometry(185, 375, 200, 20)
+        self.erreur_pwd.setGeometry(185, 385, 200, 20)
         self.erreur_pwd.setStyleSheet("color: #e8873d;"
                                    "font-size: 11px;"
                                    "font-weight: Bold;")
@@ -130,31 +166,42 @@ class Inscription(QWidget):
         self.erreur_pwd.hide()
 
         self.veuillez_remplir_pwd = QLabel(self)
-        self.veuillez_remplir_pwd.setGeometry(185, 375, 200, 20)
+        self.veuillez_remplir_pwd.setGeometry(185, 385, 200, 20)
         self.veuillez_remplir_pwd.setStyleSheet("color: #e8873d;"
                                    "font-size: 11px;"
                                    "font-weight: Bold;")
         self.veuillez_remplir_pwd.setText("Veuillez remplir ce champ")
         self.veuillez_remplir_pwd.hide()
 
+        txt_pwd_inscription_bg = QLabel(self)
+        txt_pwd_inscription_bg.setGeometry(180, 335, 210, 40)
+        txt_pwd_inscription_bg.setStyleSheet("background-color: #D9D9D9;"
+                              "border-radius: 0px;"
+                              "color: #2F3038;")
+
         txt_pwd_inscription = QLineEdit(self)
-        txt_pwd_inscription.setGeometry(185, 320, 200, 50)
+        txt_pwd_inscription.setGeometry(185, 330, 200, 50)
+        txt_pwd_inscription.setFont(jersey25_16)
         txt_pwd_inscription.setStyleSheet("background-color: #D9D9D9;"
-                              "border-radius: 5px;"
-                              "padding: 5px;"
-                              "color: #2F3038;"
-                              "font-weight: Bold;")
+                              "border-radius: 0px;"
+                              "padding: 0px;"
+                              "color: #2F3038;")
         txt_pwd_inscription.setPlaceholderText("MOT DE PASSE")
         txt_pwd_inscription.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
         txt_pwd_inscription.setEchoMode(QLineEdit.EchoMode.Password)
 
+        carre_pwd_confirm_bg = QLabel(self)
+        carre_pwd_confirm_bg.setGeometry(405, 330, 220, 50)
+        carre_pwd_confirm_bg.setStyleSheet("background-color: #BBBCC0;"
+                              "border-radius: 0px;")
+
         carre_pwd_confirm = QLabel(self)
-        carre_pwd_confirm.setGeometry(410, 315, 210, 60)
+        carre_pwd_confirm.setGeometry(410, 325, 210, 60)
         carre_pwd_confirm.setStyleSheet("background-color: #BBBCC0;"
-                              "border-radius: 5px;")
+                              "border-radius: 0px;")
 
         self.erreur_pwd_confirm = QLabel(self)
-        self.erreur_pwd_confirm.setGeometry(415, 375, 200, 20)
+        self.erreur_pwd_confirm.setGeometry(415, 385, 200, 20)
         self.erreur_pwd_confirm.setStyleSheet("color: #e8873d;"
                                    "font-size: 11px;"
                                    "font-weight: Bold;")
@@ -162,34 +209,47 @@ class Inscription(QWidget):
         self.erreur_pwd_confirm.hide()
 
         self.veuillez_remplir_pwd_2 = QLabel(self)
-        self.veuillez_remplir_pwd_2.setGeometry(415, 375, 200, 20)
+        self.veuillez_remplir_pwd_2.setGeometry(415, 385, 200, 20)
         self.veuillez_remplir_pwd_2.setStyleSheet("color: #e8873d;"
                                    "font-size: 11px;"
                                    "font-weight: Bold;")
         self.veuillez_remplir_pwd_2.setText("Veuillez remplir ce champ")
         self.veuillez_remplir_pwd_2.hide()
 
+        txt_pwd_inscription_confirm_bg = QLineEdit(self)
+        txt_pwd_inscription_confirm_bg.setGeometry(410, 335, 210, 40)
+        txt_pwd_inscription_confirm_bg.setStyleSheet("background-color: #D9D9D9;"
+                              "border-radius: 0px;"
+                              "color: #2F3038;")
+
         txt_pwd_inscription_confirm = QLineEdit(self)
-        txt_pwd_inscription_confirm.setGeometry(415, 320, 200, 50)
+        txt_pwd_inscription_confirm.setGeometry(415, 330, 200, 50)
+        txt_pwd_inscription_confirm.setFont(jersey25_16)
         txt_pwd_inscription_confirm.setStyleSheet("background-color: #D9D9D9;"
-                              "border-radius: 5px;"
-                              "padding: 5px;"
+                              "border-radius: 0px;"
+                              "padding: 0px;"
                               "color: #2F3038;"
                               "font-weight: Bold;")
         txt_pwd_inscription_confirm.setPlaceholderText("MOT DE PASSE x2")
         txt_pwd_inscription_confirm.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
         txt_pwd_inscription_confirm.setEchoMode(QLineEdit.EchoMode.Password)
 
-
+        btn_go_bg = QPushButton(self)
+        btn_go_bg.setGeometry(175, 415, 450, 50)
+        btn_go_bg.setStyleSheet("background-color: #62a1a6;"
+                              "border-radius: 0px;")
+        btn_go_bg.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        btn_go_bg.clicked.connect(lambda: self.btn_go_click(txt_email_inscription.text(),
+                                                txt_nom_inscription.text(),
+                                                txt_pwd_inscription.text(),
+                                                txt_pwd_inscription_confirm.text()))
 
         btn_go = QPushButton(self)
-        btn_go.setGeometry(180, 400, 440, 60)
-        btn_go.setStyleSheet("background-color: #8C322D;"
-                              "border-radius: 5px;"
-                              "font-size: 24px;"
-                              "color: #F5F5F5;"
-                              "font-family: Futura;"
-                              "font-weight: Bold;")
+        btn_go.setGeometry(180, 410, 440, 60)
+        btn_go.setFont(jersey25_40)
+        btn_go.setStyleSheet("background-color: #62a1a6;"
+                              "border-radius: 0px;"
+                              "color: #2F3038")
         btn_go.setText("GO")
         btn_go.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         btn_go.clicked.connect(lambda: self.btn_go_click(txt_email_inscription.text(),
@@ -205,7 +265,7 @@ class Inscription(QWidget):
         self.creation_success.setText("Compte créé avec succès!")
         self.creation_success.hide()
 
-        logo = QPixmap("resources/logo.png")
+        logo = QPixmap("resources/logo_retro.png")
         logo_label.setPixmap(logo)
         logo_label.setScaledContents(True)
 

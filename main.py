@@ -1,9 +1,7 @@
 """Modules"""
 import sys
 import scrape
-import main_window as main_window
-
-
+import main_window
 
 def main():
     """Démmarage de l'application"""
