@@ -3,7 +3,7 @@
 """Modules"""
 import re
 from PyQt6.QtWidgets import QLabel, QPushButton, QLineEdit, QWidget
-from PyQt6.QtGui import QPixmap, QCursor, QFontDatabase, QFont
+from PyQt6.QtGui import QPixmap, QCursor, QFontDatabase, QFont, QShortcut, QKeySequence
 from PyQt6.QtCore import Qt
 import bd
 
@@ -99,7 +99,7 @@ class Connection(QWidget):
                               "border-radius: 0px;"
                               "color: #2F3038;")
         txt_email_connection.setPlaceholderText("ADRESSE COURRIEL")
-        txt_email_connection.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+        txt_email_connection.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
         self.erreur_pwd = QLabel(self)
         self.erreur_pwd.setGeometry(185, 382, 200, 20)
@@ -138,7 +138,7 @@ class Connection(QWidget):
                               "border-radius: 0px;"
                               "color: #2F3038;")
         txt_pwd_connection.setPlaceholderText("MOT DE PASSE")
-        txt_pwd_connection.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+        txt_pwd_connection.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         txt_pwd_connection.setEchoMode(QLineEdit.EchoMode.Password)
 
         btn_go_bg = QPushButton(self)
@@ -161,9 +161,13 @@ class Connection(QWidget):
                                                          txt_pwd_connection.text()))
 
 
-        logo = QPixmap("resources/logo_retro.png")
+        logo = QPixmap("resources/images/logo.png")
         logo_label.setPixmap(logo)
         logo_label.setScaledContents(True)
+
+        shortcut = QShortcut(QKeySequence("Return"), self)
+        shortcut.activated.connect(lambda: self.btn_go_click(txt_email_connection.text(),
+                                                         txt_pwd_connection.text()))
 
     def btn_inscription_click(self):
         """Action lors du clique sur le bouton INSCRIPTION"""

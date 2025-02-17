@@ -3,7 +3,7 @@
 """Modules"""
 import re
 from PyQt6.QtWidgets import QLabel, QPushButton, QLineEdit, QWidget
-from PyQt6.QtGui import QPixmap, QCursor, QFontDatabase, QFont
+from PyQt6.QtGui import QPixmap, QCursor, QFontDatabase, QFont, QShortcut, QKeySequence
 from PyQt6.QtCore import Qt
 import bd
 
@@ -102,7 +102,7 @@ class Inscription(QWidget):
                               "padding: 0px;"
                               "color: #2F3038;")
         txt_email_inscription.setPlaceholderText("ADRESSE COURRIEL")
-        txt_email_inscription.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+        txt_email_inscription.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
         self.erreur_nom = QLabel(self)
         self.erreur_nom.setGeometry(415, 302, 440, 20)
@@ -140,7 +140,7 @@ class Inscription(QWidget):
                               "border-radius: 0px;"
                               "color: #2F3038;")
         txt_nom_inscription.setPlaceholderText("PRÉNOM")
-        txt_nom_inscription.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+        txt_nom_inscription.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
         self.erreur_pwd = QLabel(self)
         self.erreur_pwd.setGeometry(185, 382, 200, 20)
@@ -180,7 +180,7 @@ class Inscription(QWidget):
                               "padding: 0px;"
                               "color: #2F3038;")
         txt_pwd_inscription.setPlaceholderText("MOT DE PASSE")
-        txt_pwd_inscription.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+        txt_pwd_inscription.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         txt_pwd_inscription.setEchoMode(QLineEdit.EchoMode.Password)
 
 
@@ -208,7 +208,7 @@ class Inscription(QWidget):
         carre_pwd_confirm.setStyleSheet("background-color: #BBBCC0;"
                               "border-radius: 0px;")
 
-        txt_pwd_inscription_confirm_bg = QLineEdit(self)
+        txt_pwd_inscription_confirm_bg = QLabel(self)
         txt_pwd_inscription_confirm_bg.setGeometry(410, 335, 210, 40)
         txt_pwd_inscription_confirm_bg.setStyleSheet("background-color: #D9D9D9;"
                               "border-radius: 0px;"
@@ -221,7 +221,7 @@ class Inscription(QWidget):
                               "border-radius: 0px;"
                               "color: #2F3038;")
         txt_pwd_inscription_confirm.setPlaceholderText("MOT DE PASSE x2")
-        txt_pwd_inscription_confirm.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+        txt_pwd_inscription_confirm.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         txt_pwd_inscription_confirm.setEchoMode(QLineEdit.EchoMode.Password)
 
         btn_go_bg = QPushButton(self)
@@ -254,9 +254,13 @@ class Inscription(QWidget):
         self.creation_success.setText("Compte créé avec succès !")
         self.creation_success.hide()
 
-        logo = QPixmap("resources/logo_retro.png")
+        logo = QPixmap("resources/images/logo.png")
         logo_label.setPixmap(logo)
         logo_label.setScaledContents(True)
+
+        shortcut = QShortcut(QKeySequence("Return"), self)
+        shortcut.activated.connect(lambda: self.btn_go_click(txt_email_connection.text(),
+                                                         txt_pwd_connection.text()))
 
     def btn_connection_click(self):
         """Action lors du clique sur le bouton CONNECTION"""

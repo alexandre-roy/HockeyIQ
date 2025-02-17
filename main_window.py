@@ -4,7 +4,8 @@
 """Modules"""
 from PyQt6.QtWidgets import QApplication, QMainWindow, QStackedWidget
 from PyQt6.QtGui import QPixmap, QCursor
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QUrl
+from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
 from connection import Connection
 from inscription import Inscription
 from overview import Overview
@@ -24,6 +25,19 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self.connection)
 
+        self.audio_output = QAudioOutput()
+        self.player = QMediaPlayer()
+        self.player.setAudioOutput(self.audio_output)
+        self.player.setSource(QUrl.fromLocalFile("resources/sounds/nhl94.mp3"))
+        self.player.mediaStatusChanged.connect(self.redemarrer_musique)
+        self.player.play()
+
+    def redemarrer_musique(self, statut):
+        """Redémarre la musique quand elle est terminée"""
+        if statut == QMediaPlayer.MediaStatus.EndOfMedia:
+            self.player.setPosition(0)
+            self.player.play()
+
     def afficher_connection(self):
         """Affiche la page de connection"""
         self.connection = Connection(self)
@@ -38,3 +52,4 @@ class MainWindow(QMainWindow):
         """Affiche la page d'overview"""
         self.overview = Overview(self)
         self.setCentralWidget(self.overview)
+        self.player.stop()
