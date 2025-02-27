@@ -55,20 +55,6 @@ class Connection(QWidget):
         btn_inscription.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         btn_inscription.clicked.connect(self.btn_inscription_click)
 
-        self.erreur_email = QLabel(self)
-        self.erreur_email.setGeometry(185, 302, 430, 20)
-        self.erreur_email.setFont(jersey25_16)
-        self.erreur_email.setStyleSheet("color: #cc1d10;")
-        self.erreur_email.setText("* Cette adresse courriel n'est pas lié à un compte")
-        self.erreur_email.hide()
-
-        self.erreur_email_regex = QLabel(self)
-        self.erreur_email_regex.setGeometry(185, 302, 430, 20)
-        self.erreur_email_regex.setFont(jersey25_16)
-        self.erreur_email_regex.setStyleSheet("color: #cc1d10;")
-        self.erreur_email_regex.setText("* Adresse courriel invalide")
-        self.erreur_email_regex.hide()
-
         self.veuillez_remplir_email = QLabel(self)
         self.veuillez_remplir_email.setGeometry(185, 302, 430, 20)
         self.veuillez_remplir_email.setFont(jersey25_16)
@@ -102,10 +88,10 @@ class Connection(QWidget):
         txt_email_connection.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
         self.erreur_pwd = QLabel(self)
-        self.erreur_pwd.setGeometry(185, 382, 200, 20)
+        self.erreur_pwd.setGeometry(185, 382, 430, 20)
         self.erreur_pwd.setFont(jersey25_16)
         self.erreur_pwd.setStyleSheet("color: #cc1d10;")
-        self.erreur_pwd.setText("* Mot de passe incorrect")
+        self.erreur_pwd.setText("* Adresse courriel ou mot de passe invalide")
         self.erreur_pwd.hide()
 
         self.veuillez_remplir_pwd = QLabel(self)
@@ -173,30 +159,17 @@ class Connection(QWidget):
         """Action lors du clique sur le bouton INSCRIPTION"""
         self.main_window.afficher_inscription()
 
-    def btn_connection_click(self):
-        """Action lors du clique sur le bouton CONNECTION"""
-
     def btn_go_click(self, email, pwd):
         """Action de cliquer sur le bouton GO"""
-        valide = True
-
-        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        valide = False
 
         self.veuillez_remplir_email.hide()
         self.veuillez_remplir_pwd.hide()
-        self.erreur_email.hide()
-        self.erreur_email_regex.hide()
         self.erreur_pwd.hide()
 
         if not email or email.isspace():
-            valide = False
             self.veuillez_remplir_email.show()
-        elif not re.match(email_regex, email):
-            valide = False
-            self.erreur_email_regex.show()
-
         if not pwd or pwd.isspace():
-            valide = False
             self.veuillez_remplir_pwd.show()
 
         utilisateur_dictionnaire = {
@@ -206,19 +179,10 @@ class Connection(QWidget):
 
         with bd.creer_connexion() as connection:
             with connection.get_curseur() as c:
-                c.execute("SELECT * FROM utilisateurs WHERE email = %(email)s",
-                           utilisateur_dictionnaire)
-                if not c.fetchone():
-                    valide = False
-                    self.erreur_email.show()
-
-        with bd.creer_connexion() as connection:
-            with connection.get_curseur() as c:
                 c.execute("SELECT * FROM utilisateurs WHERE email = %(email)s " +
                           "AND mot_de_passe != (SHA2(%(mot_de_passe)s, 256))",
                            utilisateur_dictionnaire)
                 if c.fetchone():
-                    valide = False
                     self.erreur_pwd.show()
 
         with bd.creer_connexion() as connection:
@@ -228,6 +192,8 @@ class Connection(QWidget):
                            utilisateur_dictionnaire)
                 if c.fetchone():
                     valide = True
+                else:
+                    self.erreur_pwd.show()
 
         if valide:
             self.main_window.afficher_overview()
