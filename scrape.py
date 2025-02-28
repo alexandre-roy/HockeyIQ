@@ -3,6 +3,7 @@
 """Modules"""
 import re
 import time
+import threading
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -18,22 +19,34 @@ def run():
     sql("DELETE FROM parties")
 
     equipes_b2 = extraire_classement(get_url("classement_b2_h2425").json())
-    inserer_classement("B2", "H2425", equipes_b2)
-
     equipes_b3 = extraire_classement(get_url("classement_b3_h2425").json())
+
+    statistiques_b2_result = []
+    statistiques_b3_result = []
+    calendrier_b2_result = []
+    calendrier_b3_result = []
+
+    statistiques_b2_thread = threading.Thread(target=lambda: statistiques_b2_result.append(extraire_joueurs('5852')))
+    statistiques_b3_thread = threading.Thread(target=lambda: statistiques_b3_result.append(extraire_joueurs('5194')))
+    calendrier_b2_thread = threading.Thread(target=lambda: calendrier_b2_result.append(extraire_calendrier('5852')))
+    calendrier_b3_thread = threading.Thread(target=lambda: calendrier_b3_result.append(extraire_calendrier('5194')))
+
+    statistiques_b2_thread.start()
+    statistiques_b3_thread.start()
+    calendrier_b2_thread.start()
+    calendrier_b3_thread.start()
+
+    statistiques_b2_thread.join()
+    statistiques_b3_thread.join()
+    calendrier_b2_thread.join()
+    calendrier_b3_thread.join()
+
+    inserer_classement("B2", "H2425", equipes_b2)
     inserer_classement("B3", "H2425", equipes_b3)
-
-    statistiques_b2 = extraire_joueurs('5852')
-    inserer_joueurs("B2", "H2425", statistiques_b2)
-
-    statistiques_b3 = extraire_joueurs('5194')
-    inserer_joueurs("B3", "H2425", statistiques_b3)
-
-    calendrier_b2 = extraire_calendrier('5852')
-    inserer_calendrier("B2", "H2425", calendrier_b2)
-
-    calendrier_b3 = extraire_calendrier('5194')
-    inserer_calendrier("B3", "H2425", calendrier_b3)
+    inserer_joueurs("B2", "H2425", statistiques_b2_result[0])
+    inserer_joueurs("B3", "H2425", statistiques_b3_result[0])
+    inserer_calendrier("B2", "H2425", calendrier_b2_result[0])
+    inserer_calendrier("B3", "H2425", calendrier_b3_result[0])
 
 def extraire_classement(url):
     """Etxtrait le classement à partir d'un url"""
