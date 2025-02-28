@@ -48,6 +48,8 @@ def run():
     inserer_calendrier("B2", "H2425", calendrier_b2_result[0])
     inserer_calendrier("B3", "H2425", calendrier_b3_result[0])
 
+    print("La base de données est maintenant à jour !")
+
 def extraire_classement(url):
     """Etxtrait le classement à partir d'un url"""
     stats_equipes = []

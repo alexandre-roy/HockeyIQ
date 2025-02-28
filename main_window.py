@@ -23,14 +23,14 @@ class MainWindow(QMainWindow):
         self.inscription = Inscription(self)
         self.overview = Overview(self)
 
-        self.setCentralWidget(self.connection)
+        self.setCentralWidget(self.overview)
 
-        self.audio_output = QAudioOutput()
-        self.player = QMediaPlayer()
-        self.player.setAudioOutput(self.audio_output)
-        self.player.setSource(QUrl.fromLocalFile("resources/sounds/nhl94.mp3"))
-        self.player.mediaStatusChanged.connect(self.redemarrer_musique)
-        self.player.play()
+        # self.audio_output = QAudioOutput()
+        # self.player = QMediaPlayer()
+        # self.player.setAudioOutput(self.audio_output)
+        # self.player.setSource(QUrl.fromLocalFile("resources/sounds/nhl94.mp3"))
+        # self.player.mediaStatusChanged.connect(self.redemarrer_musique)
+        # self.player.play()
 
     def redemarrer_musique(self, statut):
         """Redémarre la musique quand elle est terminée"""

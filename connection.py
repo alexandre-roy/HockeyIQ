@@ -1,7 +1,6 @@
 #pylint: disable = no-name-in-module
 
 """Modules"""
-import re
 from PyQt6.QtWidgets import QLabel, QPushButton, QLineEdit, QWidget
 from PyQt6.QtGui import QPixmap, QCursor, QFontDatabase, QFont, QShortcut, QKeySequence
 from PyQt6.QtCore import Qt
@@ -169,8 +168,6 @@ class Connection(QWidget):
 
         if not email or email.isspace():
             self.veuillez_remplir_email.show()
-        if not pwd or pwd.isspace():
-            self.veuillez_remplir_pwd.show()
 
         utilisateur_dictionnaire = {
             "email" : email,
@@ -192,6 +189,8 @@ class Connection(QWidget):
                            utilisateur_dictionnaire)
                 if c.fetchone():
                     valide = True
+                elif not pwd or pwd.isspace():
+                    self.veuillez_remplir_pwd.show()
                 else:
                     self.erreur_pwd.show()
 
