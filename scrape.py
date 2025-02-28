@@ -1,9 +1,9 @@
 #pylint: disable = line-too-long
 
 """Modules"""
+import re
 import time
 import requests
-import re
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -15,6 +15,7 @@ def run():
     """Ficher complet"""
     sql("DELETE FROM equipes")
     sql("DELETE FROM joueurs")
+    sql("DELETE FROM parties")
 
     equipes_b2 = extraire_classement(get_url("classement_b2_h2425").json())
     inserer_classement("B2", "H2425", equipes_b2)
@@ -22,11 +23,17 @@ def run():
     equipes_b3 = extraire_classement(get_url("classement_b3_h2425").json())
     inserer_classement("B3", "H2425", equipes_b3)
 
-    statistiques_b2 = extraire_statistiques('5852')
+    statistiques_b2 = extraire_joueurs('5852')
     inserer_joueurs("B2", "H2425", statistiques_b2)
 
-    statistiques_b3 = extraire_statistiques('5194')
+    statistiques_b3 = extraire_joueurs('5194')
     inserer_joueurs("B3", "H2425", statistiques_b3)
+
+    calendrier_b2 = extraire_calendrier('5852')
+    inserer_calendrier("B2", "H2425", calendrier_b2)
+
+    calendrier_b3 = extraire_calendrier('5194')
+    inserer_calendrier("B3", "H2425", calendrier_b3)
 
 def extraire_classement(url):
     """Etxtrait le classement à partir d'un url"""
@@ -95,7 +102,7 @@ def inserer_classement(categorie, saison,  equipes):
 
         position += 1
 
-def extraire_statistiques(categorie):
+def extraire_joueurs(categorie):
     """Extrait les statistiques du site"""
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
@@ -191,6 +198,116 @@ def inserer_joueurs(categorie, saison,  joueurs):
             joueurs_dictionnaire)
 
         position += 1
+
+def extraire_calendrier(categorie):
+    """Extrait les calendriers du site"""
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    options.add_argument('--disable-blink-features=AutomationControlled')
+    driver = webdriver.Chrome(options=options)
+
+    driver.get("https://www.ddlc.ca/ligues/calendrier/")
+
+    WebDriverWait(driver, 20).until(lambda d: d.execute_script('return document.readyState') == 'complete')
+
+    WebDriverWait(driver, 20).until(EC.frame_to_be_available_and_switch_to_it((By.TAG_NAME, 'iframe')))
+
+    button_categories = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[id='dropdownMenuButtonCategories']")))
+    button_categories.click()
+    time.sleep(1)
+
+    button_my_categorie = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.CSS_SELECTOR, f"a[data-value='{categorie}']")))
+    button_my_categorie.click()
+    time.sleep(1)
+
+    labels = WebDriverWait(driver, 10).until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "label.list_view.btn.btn-dark"))
+        )
+
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", labels[0])
+    time.sleep(1)
+
+    labels[1].click()
+
+    time.sleep(3)
+
+    html_content = driver.page_source
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    calendrier = soup.find('table')
+
+    if calendrier:
+        parties = []
+
+        for row in soup.find_all("tr", class_="position-relative schedule_container border"):
+
+            equipes = row.find_all("div", class_="team_name")
+            equipe_visiteur = equipes[0].find("a").text.strip()
+            equipe_locale = equipes[1].find("a").text.strip()
+
+            date_partie = row.find_all("div", class_="game_date")
+
+            raw_date = date_partie[0].text.strip()
+            date = raw_date.split("\n")[-1].strip()
+
+            heure = date_partie[1].text.strip()
+
+            scores = row.find_all("span", class_="score")
+
+            if len(scores) > 0:
+                score_visiteur = re.search(r"\d+", scores[0].text).group()
+            else:
+                score_visiteur = None
+
+            if len(scores) > 1:
+                score_local = re.search(r"\d+", scores[1].text).group()
+            else:
+                score_local = None
+
+            fusillades = None
+            if score_visiteur and score_local:
+                tds = row.find_all('td', class_='text-nowrap')
+                third_td = tds[2]
+                fusillades = 'FUS' in third_td.text
+
+            partie_info = {
+                "partie": {
+                    "equipe_visiteur": equipe_visiteur,
+                    "equipe_locale": equipe_locale,
+                    "date": date,
+                    "heure": heure,
+                    "score_visiteur": score_visiteur,
+                    "score_local": score_local,
+                    "fusillades": fusillades
+                }
+            }
+
+            parties.append(partie_info)
+
+        return parties
+
+    driver.quit()
+
+def inserer_calendrier(categorie, saison, calendrier):
+    """Insère les calendriers dans la base de données"""
+    for partie in calendrier:
+        partie_info = partie["partie"]
+
+        calendrier_dictionnaire = {
+            "categorie": categorie,
+            "saison": saison,
+            "equipe_visiteur": partie_info['equipe_visiteur'],
+            "equipe_locale": partie_info['equipe_locale'],
+            "date": partie_info['date'],
+            "heure": partie_info['heure'],
+            "score_visiteur": partie_info['score_visiteur'],
+            "score_local": partie_info['score_local'],
+            "fusillades": partie_info['fusillades']
+        }
+        sql("""
+            INSERT INTO parties (id_partie, categorie, saison, equipe_local, equipe_visiteur, score_local, score_visiteur, fusillades, date, heure)
+            VALUES (NULL, %(categorie)s, %(saison)s, %(equipe_locale)s, %(equipe_visiteur)s, %(score_local)s, %(score_visiteur)s, %(fusillades)s, %(date)s, %(heure)s)
+        """, calendrier_dictionnaire)
 
 def get_url(url):
     """Retourne le contenu d'un fichier basé sur un url"""
