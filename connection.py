@@ -177,14 +177,6 @@ class Connection(QWidget):
         with bd.creer_connexion() as connection:
             with connection.get_curseur() as c:
                 c.execute("SELECT * FROM utilisateurs WHERE email = %(email)s " +
-                          "AND mot_de_passe != (SHA2(%(mot_de_passe)s, 256))",
-                           utilisateur_dictionnaire)
-                if c.fetchone():
-                    self.erreur_pwd.show()
-
-        with bd.creer_connexion() as connection:
-            with connection.get_curseur() as c:
-                c.execute("SELECT * FROM utilisateurs WHERE email = %(email)s " +
                           "AND mot_de_passe = (SHA2(%(mot_de_passe)s, 256))",
                            utilisateur_dictionnaire)
                 if c.fetchone():
