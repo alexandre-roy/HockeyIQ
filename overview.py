@@ -1,7 +1,7 @@
 #pylint: disable = no-name-in-module
 
 """Modules"""
-from PyQt6.QtWidgets import QLabel, QWidget, QListWidget, QListWidgetItem, QPushButton, QFrame, QVBoxLayout
+from PyQt6.QtWidgets import QLabel, QWidget, QListWidget, QListWidgetItem, QFrame, QVBoxLayout
 from PyQt6.QtGui import QFontDatabase, QFont, QCursor
 from PyQt6.QtCore import Qt
 import bd
@@ -28,12 +28,7 @@ class Overview(QWidget):
         self.jersey25_32 = QFont("jersey 25", 38)
         self.jersey25_16 = QFont("jersey 25", 16)
 
-        self.btn_b2_bg = QPushButton(self)
-        self.btn_b2 = QPushButton(self)
-        self.btn_b3_bg = QPushButton(self)
-        self.btn_b3 = QPushButton(self)
-
-        self.initialiser_page(categorie)
+        utils.show_boutons_categories(self, 0)
 
         label_sommaire_bg = QLabel(self)
         label_sommaire_bg.setGeometry(20, 20, 300, 40)
@@ -86,50 +81,6 @@ class Overview(QWidget):
         list_joueurs.setStyleSheet("""background-color: #bbbcc0""")
 
         self.populer_listes(categorie, list_equipes, list_joueurs)
-
-
-    def initialiser_page(self, categorie):
-        """Initialise la page basé sur la catégorie passée en paramètres"""
-
-        self.btn_b2_bg.setGeometry(670, 21, 40, 43)
-        self.btn_b2_bg.setFont(self.jersey25_32)
-        self.btn_b2_bg.setStyleSheet("background-color: #f2bd41;"
-                                    "border-radius: 0px;")
-
-        self.btn_b2.setGeometry(667, 24, 46, 37)
-        self.btn_b2.setFont(self.jersey25_32)
-        self.btn_b2.setStyleSheet("background-color:#f2bd41;"
-                                    "border-radius: 0px;"
-                                    "color: #2F3038;")
-        self.btn_b2.setText('B2')
-
-        self.btn_b3_bg.setGeometry(730, 21, 40, 43)
-        self.btn_b3_bg.setFont(self.jersey25_32)
-        self.btn_b3_bg.setStyleSheet("background-color: #bbbcc0;"
-                                    "border-radius: 0px;")
-        self.btn_b3_bg.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-
-        self.btn_b3.setGeometry(727, 24, 46, 37)
-        self.btn_b3.setFont(self.jersey25_32)
-        self.btn_b3.setStyleSheet("background-color:#bbbcc0;"
-                                    "border-radius: 0px;"
-                                    "color: #2F3038;")
-        self.btn_b3.setText("B3")
-        self.btn_b3.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-
-        if categorie == 'B2':
-            self.btn_b2_bg.clicked.connect(self.btn_b2_click)
-            self.btn_b2.clicked.connect(self.btn_b2_click)
-
-            self.btn_b3_bg.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            self.btn_b3.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-
-        else:
-            self.btn_b3_bg.clicked.connect(self.btn_b3_click)
-            self.btn_b3.clicked.connect(self.btn_b3_click)
-
-            self.btn_b2_bg.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            self.btn_b2.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
     def get_equipes(self, categorie):
         """Récupère les équipes dans la base de données"""
@@ -231,11 +182,3 @@ class Overview(QWidget):
 
             if position == 5:
                 break
-
-    def btn_b2_click(self):
-        """Action lors du click sur le bouton B2"""
-        print("B2")
-
-    def btn_b3_click(self):
-        """Action lors du click sur le bouton B3"""
-        pass

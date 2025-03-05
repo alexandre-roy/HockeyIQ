@@ -9,6 +9,7 @@ from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
 from connection import Connection
 from inscription import Inscription
 from overview import Overview
+from calendrier import Calendrier
 
 class MainWindow(QMainWindow):
     """Fenêtre d'accueil / login"""
@@ -22,6 +23,7 @@ class MainWindow(QMainWindow):
         self.connection = Connection(self)
         self.inscription = Inscription(self)
         self.overview = Overview(self)
+        self.calendrier = Calendrier(self)
 
         self.setCentralWidget(self.overview)
 
@@ -52,4 +54,9 @@ class MainWindow(QMainWindow):
         """Affiche la page d'overview"""
         self.overview = Overview(self)
         self.setCentralWidget(self.overview)
-        self.player.stop()
+        #self.player.stop()
+
+    def afficher_calendrier(self):
+        """Affiche la page du calendrier"""
+        self.calendrier = Calendrier(self)
+        self.setCentralWidget(self.calendrier)
