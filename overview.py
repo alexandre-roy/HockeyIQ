@@ -1,7 +1,7 @@
 #pylint: disable = no-name-in-module
 
 """Modules"""
-from PyQt6.QtWidgets import QLabel, QWidget, QListWidget, QListWidgetItem, QFrame, QVBoxLayout
+from PyQt6.QtWidgets import QLabel, QWidget, QListWidget, QListWidgetItem, QFrame, QVBoxLayout, QHBoxLayout
 from PyQt6.QtGui import QFontDatabase, QFont, QCursor
 from PyQt6.QtCore import Qt
 import bd
@@ -128,9 +128,9 @@ class Overview(QWidget):
         equipes = self.get_equipes(categorie)
 
         position = 0
+
         for _, e in equipes.items():
             position += 1
-
             frame = QFrame()
             frame.setStyleSheet("QFrame { background-color: #d9d9d9; margin: 3px;}")
 
@@ -138,9 +138,18 @@ class Overview(QWidget):
             layout.setContentsMargins(0, 10, 0, 10)
             layout.setSpacing(0)
 
-            label = QLabel(f"{position}. {e['nom_equipe']} - {e['points']} PTS ({e['victoires_total']} - {e['defaites']} - {e['nulles']})")
-            label.setFont(self.jersey25_16)
-            layout.addWidget(label)
+            team_label = QLabel(f"{e['nom_equipe']}")
+            stats_label = QLabel(f"{e['points']} PTS ({e['victoires_total']} - {e['defaites']} - {e['nulles']})")
+
+            team_label.setFont(self.jersey25_16)
+            stats_label.setFont(self.jersey25_16)
+
+            h_layout = QHBoxLayout()
+            h_layout.addWidget(team_label)
+            h_layout.addStretch()
+            h_layout.addWidget(stats_label)
+
+            layout.addLayout(h_layout)
 
             frame.setLayout(layout)
             frame.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
@@ -167,9 +176,18 @@ class Overview(QWidget):
             layout.setContentsMargins(0, 10, 0, 10)
             layout.setSpacing(0)
 
-            label = QLabel(f"{position}. {j['nom']} - {j['equipe']} - {j['points']} PTS ({j['matchs_joues']} MJ)")
-            label.setFont(self.jersey25_16)
-            layout.addWidget(label)
+            player_label = QLabel(f"{j['nom']} - {j['equipe']}")
+            stats_label = QLabel(f"{j['points']} PTS ({j['matchs_joues']} MJ)")
+
+            player_label.setFont(self.jersey25_16)
+            stats_label.setFont(self.jersey25_16)
+
+            h_layout = QHBoxLayout()
+            h_layout.addWidget(player_label)
+            h_layout.addStretch()
+            h_layout.addWidget(stats_label)
+
+            layout.addLayout(h_layout)
 
             frame.setLayout(layout)
             frame.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))

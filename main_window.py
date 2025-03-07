@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
         self.overview = Overview(self)
         self.calendrier = Calendrier(self)
 
-        self.setCentralWidget(self.overview)
+        self.setCentralWidget(self.calendrier)
 
         # self.audio_output = QAudioOutput()
         # self.player = QMediaPlayer()

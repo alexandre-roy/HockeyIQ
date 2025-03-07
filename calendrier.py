@@ -1,8 +1,8 @@
 #pylint: disable = no-name-in-module
 
 """Modules"""
-from PyQt6.QtWidgets import QLabel, QWidget, QListWidget, QLineEdit, QListWidgetItem, QFrame, QVBoxLayout
-from PyQt6.QtGui import QFontDatabase, QFont, QCursor
+from PyQt6.QtWidgets import QLabel, QWidget, QListWidget, QListWidgetItem, QFrame, QVBoxLayout, QHBoxLayout, QPushButton
+from PyQt6.QtGui import QFontDatabase, QFont, QCursor, QIcon
 from PyQt6.QtCore import Qt
 import bd
 import utils
@@ -62,18 +62,41 @@ class Calendrier(QWidget):
         liste_parties.setWordWrap(True)
         liste_parties.setStyleSheet("""background-color: #bbbcc0""")
 
-        self.populer_liste(categorie, liste_parties)
+        parties = self.get_parties(categorie)
 
-        barre_recherche_bg = QLabel(self)
-        barre_recherche_bg.setGeometry(470, 100, 280, 40)
-        barre_recherche_bg.setStyleSheet("""background-color: #bbbcc0""")
+        self.populer_liste(parties, liste_parties)
 
-        barre_recherche = QLineEdit(self)
-        barre_recherche.setGeometry(495, 105, 250, 30)
-        barre_recherche.setStyleSheet("""background-color: #d9d9d9;
-                                        border-radius: 0px;""")
-        barre_recherche.setFont(self.jersey25_16)
-        barre_recherche.setPlaceholderText("RECHERCHE")
+        text_recherche = utils.show_barre_recherche(self)
+
+        text_recherche.textChanged.connect(
+            lambda: self.rechercher_match(categorie, text_recherche.text(), liste_parties)
+            if len(text_recherche.text()) >= 3 or len(text_recherche.text()) == 0
+            else None
+        )
+
+
+        bg_noir = QPushButton(self)
+        bg_noir_2 = QPushButton(self)
+        self.bg_fg = QPushButton(self)
+        self.bg_fg_2 = QPushButton(self)
+
+        all_games = self.get_all_parties(categorie)
+
+        bg_noir.setGeometry(434, 107, 30, 33)
+        bg_noir.setStyleSheet("background-color: #2f3038; border-radius: 0px;")
+
+        bg_noir_2.setGeometry(431, 110, 36, 27)
+        bg_noir_2.setStyleSheet("background-color: #2f3038; border-radius: 0px;")
+
+        self.bg_fg.setGeometry(437, 104, 30, 33)
+        self.bg_fg.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
+
+        self.bg_fg_2.setGeometry(434, 107, 36, 27)
+        self.bg_fg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
+        self.bg_fg_2.setFont(self.jersey25_32)
+        self.bg_fg_2.setIcon(QIcon("resources/images/switch.svg"))
+        self.bg_fg_2.setIconSize(self.bg_fg_2.size())
+        self.bg_fg_2.clicked.connect(lambda: self.populer_liste(all_games, liste_parties))
 
     def get_parties(self, categorie):
         """Récupère les joueurs dans la base de données"""
@@ -97,14 +120,37 @@ class Calendrier(QWidget):
                     }
         return parties
 
-    def populer_liste(self, categorie, liste):
+    def get_all_parties(self, categorie):
+        """Récupère toutes les parties dans la base de données"""
+        parties = {}
+        with bd.creer_connexion() as connection:
+            with connection.get_curseur() as cursor:
+                cursor.execute("""SELECT id_partie, equipe_visiteur, equipe_local, score_visiteur, score_local, fusillades, date, heure FROM parties WHERE categorie = %(categorie)s""",
+                                {
+                                    "categorie": categorie
+                                })
+
+                for ligne in cursor:
+                    parties[ligne["id_partie"]] = {
+                        "equipe_visiteur": ligne["equipe_visiteur"],
+                        "equipe_local": ligne["equipe_local"],
+                        "score_visiteur": ligne["score_visiteur"],
+                        "score_local": ligne["score_local"],
+                        "fusillades": ligne["fusillades"],
+                        "date": ligne["date"],
+                        "heure": ligne["heure"]
+                    }
+        return parties
+
+    def populer_liste(self, parties, liste):
         """Popule la liste du calendrier"""
-        parties = self.get_parties(categorie)
-        label = None
+        liste.clear()
 
         for _, p in parties.items():
             if p['score_local'] is None:
-                label = QLabel(f"{p['equipe_visiteur']} @ {p['equipe_local']} - ({p['date']} {p['heure']})")
+
+                match_label = QLabel(f"{p['equipe_visiteur']} @ {p['equipe_local']}")
+                date_label = QLabel(f"{p['date']} {p['heure']}")
 
                 frame = QFrame()
                 frame.setStyleSheet("QFrame { background-color: #d9d9d9; margin: 3px;}")
@@ -113,8 +159,15 @@ class Calendrier(QWidget):
                 layout.setContentsMargins(0, 10, 0, 10)
                 layout.setSpacing(0)
 
-                label.setFont(self.jersey25_16)
-                layout.addWidget(label)
+                h_layout = QHBoxLayout()
+                h_layout.addWidget(match_label)
+                h_layout.addStretch()
+                h_layout.addWidget(date_label)
+
+                match_label.setFont(self.jersey25_16)
+                date_label.setFont(self.jersey25_16)
+
+                layout.addLayout(h_layout)
 
                 frame.setLayout(layout)
                 frame.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
@@ -125,4 +178,25 @@ class Calendrier(QWidget):
                 liste.addItem(item)
                 liste.setItemWidget(item, frame)
 
+    def rechercher_match(self, categorie, text, liste_parties):
+        """Permet de rechercher une partie"""
+        parties = {}
+        with bd.creer_connexion() as connection:
+            with connection.get_curseur() as cursor:
+                cursor.execute("""SELECT id_partie, equipe_visiteur, equipe_local, score_visiteur, score_local, fusillades, date, heure FROM parties WHERE categorie = %(categorie)s AND (equipe_visiteur LIKE %(text)s OR equipe_local LIKE %(text)s)""",
+                                {
+                                    "categorie": categorie,
+                                    "text": f"%{text}%"
+                                })
 
+                for ligne in cursor:
+                    parties[ligne["id_partie"]] = {
+                        "equipe_visiteur": ligne["equipe_visiteur"],
+                        "equipe_local": ligne["equipe_local"],
+                        "score_visiteur": ligne["score_visiteur"],
+                        "score_local": ligne["score_local"],
+                        "fusillades": ligne["fusillades"],
+                        "date": ligne["date"],
+                        "heure": ligne["heure"]
+                    }
+        self.populer_liste(parties, liste_parties)
