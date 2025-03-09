@@ -116,7 +116,7 @@ def show_barre_recherche(parent):
     barre_recherche_loupe.setStyleSheet("""background-color: #bbbcc0;
                                         border-radius: 0px;""")
     barre_recherche_loupe.setGeometry(715, 105, 30, 30)
-    
+
     loupe = QPixmap("resources/images/search.svg")
     barre_recherche_loupe.setPixmap(loupe)
     barre_recherche_loupe.setScaledContents(True)

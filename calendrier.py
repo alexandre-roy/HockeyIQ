@@ -64,7 +64,7 @@ class Calendrier(QWidget):
 
         parties = self.get_parties(categorie)
 
-        self.populer_liste(parties, liste_parties)
+        self.populer_liste(parties, liste_parties, False)
 
         text_recherche = utils.show_barre_recherche(self)
 
@@ -80,8 +80,6 @@ class Calendrier(QWidget):
         self.bg_fg = QPushButton(self)
         self.bg_fg_2 = QPushButton(self)
 
-        all_games = self.get_all_parties(categorie)
-
         bg_noir.setGeometry(434, 107, 30, 33)
         bg_noir.setStyleSheet("background-color: #2f3038; border-radius: 0px;")
 
@@ -96,7 +94,20 @@ class Calendrier(QWidget):
         self.bg_fg_2.setFont(self.jersey25_32)
         self.bg_fg_2.setIcon(QIcon("resources/images/switch.svg"))
         self.bg_fg_2.setIconSize(self.bg_fg_2.size())
-        self.bg_fg_2.clicked.connect(lambda: self.populer_liste(all_games, liste_parties))
+        self.bg_fg_2.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.bg_fg_2.clicked.connect(lambda: self.populer_liste(parties, liste_parties, True))
+        self.bg_fg_2.clicked.connect(lambda: self.toggle_parties_label(label_parties, label_parties_bg, parties, liste_parties))
+
+    def toggle_parties_label(self, label_parties, label_parties_bg, parties, liste_parties):
+        """Change le label pour le titre"""
+        if label_parties.text() == "Parties à venir":
+            label_parties.setText("Toutes les parties")
+            label_parties_bg.setText("Toutes les parties")
+            self.populer_liste(parties, liste_parties, True)
+        else:
+            label_parties.setText("Parties à venir")
+            label_parties_bg.setText("Parties à venir")
+            self.populer_liste(parties, liste_parties, False)
 
     def get_parties(self, categorie):
         """Récupère les joueurs dans la base de données"""
@@ -120,63 +131,45 @@ class Calendrier(QWidget):
                     }
         return parties
 
-    def get_all_parties(self, categorie):
-        """Récupère toutes les parties dans la base de données"""
-        parties = {}
-        with bd.creer_connexion() as connection:
-            with connection.get_curseur() as cursor:
-                cursor.execute("""SELECT id_partie, equipe_visiteur, equipe_local, score_visiteur, score_local, fusillades, date, heure FROM parties WHERE categorie = %(categorie)s""",
-                                {
-                                    "categorie": categorie
-                                })
-
-                for ligne in cursor:
-                    parties[ligne["id_partie"]] = {
-                        "equipe_visiteur": ligne["equipe_visiteur"],
-                        "equipe_local": ligne["equipe_local"],
-                        "score_visiteur": ligne["score_visiteur"],
-                        "score_local": ligne["score_local"],
-                        "fusillades": ligne["fusillades"],
-                        "date": ligne["date"],
-                        "heure": ligne["heure"]
-                    }
-        return parties
-
-    def populer_liste(self, parties, liste):
+    def populer_liste(self, parties, liste, is_all):
         """Popule la liste du calendrier"""
         liste.clear()
 
         for _, p in parties.items():
+            if is_all is False and p['score_local'] is not None:
+                continue
             if p['score_local'] is None:
-
                 match_label = QLabel(f"{p['equipe_visiteur']} @ {p['equipe_local']}")
                 date_label = QLabel(f"{p['date']} {p['heure']}")
+            else:
+                match_label = QLabel(f"{p['equipe_visiteur']} ({p['score_visiteur']}) @ {p['equipe_local']} ({p['score_local']})")
+                date_label = QLabel(f"{p['date']} {p['heure']} ")
 
-                frame = QFrame()
-                frame.setStyleSheet("QFrame { background-color: #d9d9d9; margin: 3px;}")
+            frame = QFrame()
+            frame.setStyleSheet("QFrame { background-color: #d9d9d9; margin: 3px;}")
 
-                layout = QVBoxLayout(frame)
-                layout.setContentsMargins(0, 10, 0, 10)
-                layout.setSpacing(0)
+            layout = QVBoxLayout(frame)
+            layout.setContentsMargins(0, 10, 0, 10)
+            layout.setSpacing(0)
 
-                h_layout = QHBoxLayout()
-                h_layout.addWidget(match_label)
-                h_layout.addStretch()
-                h_layout.addWidget(date_label)
+            h_layout = QHBoxLayout()
+            h_layout.addWidget(match_label)
+            h_layout.addStretch()
+            h_layout.addWidget(date_label)
 
-                match_label.setFont(self.jersey25_16)
-                date_label.setFont(self.jersey25_16)
+            match_label.setFont(self.jersey25_16)
+            date_label.setFont(self.jersey25_16)
 
-                layout.addLayout(h_layout)
+            layout.addLayout(h_layout)
 
-                frame.setLayout(layout)
-                frame.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            frame.setLayout(layout)
+            frame.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
-                item = QListWidgetItem()
-                item.setSizeHint(frame.sizeHint())
+            item = QListWidgetItem()
+            item.setSizeHint(frame.sizeHint())
 
-                liste.addItem(item)
-                liste.setItemWidget(item, frame)
+            liste.addItem(item)
+            liste.setItemWidget(item, frame)
 
     def rechercher_match(self, categorie, text, liste_parties):
         """Permet de rechercher une partie"""
@@ -199,4 +192,4 @@ class Calendrier(QWidget):
                         "date": ligne["date"],
                         "heure": ligne["heure"]
                     }
-        self.populer_liste(parties, liste_parties)
+        self.populer_liste(parties, liste_parties, True)

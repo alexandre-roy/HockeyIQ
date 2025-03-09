@@ -125,6 +125,9 @@ class Overview(QWidget):
 
     def populer_listes(self, categorie, list_equipes, list_joueurs):
         """Popule les listes du sommaire"""
+        list_equipes.clear()
+        list_joueurs.clear()
+        
         equipes = self.get_equipes(categorie)
 
         position = 0
