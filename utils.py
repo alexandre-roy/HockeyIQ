@@ -129,7 +129,7 @@ def btn_calendrier_clicked(parent):
 
 def btn_stats_clicked(parent):
     """Affiche les stats"""
-    print("Stats")
+    parent.main_window.afficher_stats()
 
 def btn_classement_clicked(parent):
     """Affiche le classement"""
