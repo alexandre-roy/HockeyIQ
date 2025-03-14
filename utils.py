@@ -133,7 +133,7 @@ def btn_stats_clicked(parent):
 
 def btn_classement_clicked(parent):
     """Affiche le classement"""
-    print("Classement")
+    parent.main_window.afficher_classement()
 
 def btn_overview_clicked(parent):
     """Affiche l'overview"""

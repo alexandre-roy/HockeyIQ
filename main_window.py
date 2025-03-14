@@ -10,6 +10,7 @@ from connection import Connection
 from inscription import Inscription
 from overview import Overview
 from calendrier import Calendrier
+from classement import Classement
 
 class MainWindow(QMainWindow):
     """Fenêtre d'accueil / login"""
@@ -24,8 +25,9 @@ class MainWindow(QMainWindow):
         self.inscription = Inscription(self)
         self.overview = Overview(self)
         self.calendrier = Calendrier(self)
+        self.classement = Classement(self)
 
-        self.setCentralWidget(self.calendrier)
+        self.setCentralWidget(self.classement)
 
         # self.audio_output = QAudioOutput()
         # self.player = QMediaPlayer()
@@ -60,3 +62,8 @@ class MainWindow(QMainWindow):
         """Affiche la page du calendrier"""
         self.calendrier = Calendrier(self)
         self.setCentralWidget(self.calendrier)
+
+    def afficher_classement(self):
+        """Affiche la page du classement"""
+        self.classement = Classement(self)
+        self.setCentralWidget(self.classement)
