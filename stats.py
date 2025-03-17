@@ -31,13 +31,13 @@ class Statistiques(QWidget):
         utils.show_boutons_categories(self, 0)
 
         label_classement_bg = QLabel(self)
-        label_classement_bg.setGeometry(20, 20, 300, 40)
+        label_classement_bg.setGeometry(20, 10, 300, 60)
         label_classement_bg.setText("Statistiques")
         label_classement_bg.setFont(self.jersey25_64)
         label_classement_bg.setStyleSheet("color: #2f3038")
 
         label_classement = QLabel(self)
-        label_classement.setGeometry(22, 18, 300, 40)
+        label_classement.setGeometry(22, 8, 300, 60)
         label_classement.setText("Statistiques")
         label_classement.setFont(self.jersey25_64)
         label_classement.setStyleSheet("color: #62a1a6;"

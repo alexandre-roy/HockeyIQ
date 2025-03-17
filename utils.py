@@ -141,7 +141,7 @@ def btn_overview_clicked(parent):
 
 def btn_comp_clicked(parent):
     """Affiche la comparaison"""
-    print("Compétition")
+    print("Comparaison")
 
 def btn_predict_clicked(parent):
     """Affiche les prédictions"""
@@ -149,7 +149,7 @@ def btn_predict_clicked(parent):
 
 def btn_account_clicked(parent):
     """Affiche le compte"""
-    print("Compte")
+    parent.main_window.afficher_compte()
 
 def btn_b2_click(parent):
     """Action lors du click sur le bouton B2"""
