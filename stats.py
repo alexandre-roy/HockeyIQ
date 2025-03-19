@@ -19,7 +19,7 @@ class Statistiques(QWidget):
         """Interface graphique"""
         utils.show_menu_icons(self, 1)
 
-        categorie = 'B2'
+        categorie = 'B3'
 
         QFontDatabase.addApplicationFont("Resources/Fonts/Jersey25-Regular.ttf")
         QFontDatabase.addApplicationFont("Resources/Fonts/Inter-VariableFont_opsz,wght.ttf")

@@ -330,8 +330,8 @@ class Inscription(QWidget):
                     self.email_deja_utilise.show()
 
         if valide:
-            bd.sql("INSERT INTO utilisateurs (prenom, email, mot_de_passe, admin) VALUES" +
-                "(%(prenom)s, %(email)s,  SHA2(%(mot_de_passe)s, 256), False)", utilisateur_dictionnaire)
+            bd.sql("INSERT INTO utilisateurs (prenom, email, mot_de_passe) VALUES" +
+                "(%(prenom)s, %(email)s,  SHA2(%(mot_de_passe)s, 256))", utilisateur_dictionnaire)
             self.creation_success.show()
 
             self.txt_email_inscription.clear()

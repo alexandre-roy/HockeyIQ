@@ -8,6 +8,8 @@ import bd
 
 class Connection(QWidget):
     """Page de connection"""
+    email = "alexandre15roy@gmail.com"
+
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
@@ -188,3 +190,4 @@ class Connection(QWidget):
 
         if valide:
             self.main_window.afficher_overview()
+            self.email = email
