@@ -181,7 +181,6 @@ def btn_b2_click(parent):
         parent.text_recherche.setText("")
     elif hasattr(parent, 'populer_listes') and parent.list_equipes:
         parent.populer_listes('B2', parent.list_equipes, parent.list_joueurs)
-        parent.text_recherche.setText("")
 
 
 def btn_b3_click(parent):
@@ -208,4 +207,3 @@ def btn_b3_click(parent):
         parent.text_recherche.setText("")
     elif hasattr(parent, 'populer_listes') and parent.list_equipes:
         parent.populer_listes('B3', parent.list_equipes, parent.list_joueurs)
-        parent.text_recherche.setText("")
