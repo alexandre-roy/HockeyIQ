@@ -8,15 +8,17 @@ import bd
 
 class Connection(QWidget):
     """Page de connection"""
-    email = "alexandre15roy@gmail.com"
-
-    def __init__(self, main_window):
+    def __init__(self, main_window, message):
         super().__init__()
         self.main_window = main_window
+        self.email = ""
+        self.message = message
         self.initialiser_page_connection()
+
 
     def initialiser_page_connection(self):
         """Interface graphique"""
+
         QFontDatabase.addApplicationFont("Resources/Fonts/Jersey25-Regular.ttf")
         QFontDatabase.addApplicationFont("Resources/Fonts/Inter-VariableFont_opsz,wght.ttf")
 
@@ -128,6 +130,12 @@ class Connection(QWidget):
         txt_pwd_connection.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         txt_pwd_connection.setEchoMode(QLineEdit.EchoMode.Password)
 
+        self.message_label = QLabel(self)
+        self.message_label.setGeometry(315, 475, 200, 20)
+        self.message_label.setText(self.message)
+        self.message_label.setFont(jersey25_16)
+        self.message_label.setStyleSheet("color: #2bb537;")
+
         btn_go_bg = QPushButton(self)
         btn_go_bg.setGeometry(175, 415, 450, 50)
         btn_go_bg.setStyleSheet("background-color: #62a1a6;"
@@ -189,5 +197,5 @@ class Connection(QWidget):
                     self.erreur_pwd.show()
 
         if valide:
-            self.main_window.afficher_overview()
             self.email = email
+            self.main_window.afficher_overview()

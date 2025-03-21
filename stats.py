@@ -58,17 +58,17 @@ class Statistiques(QWidget):
 
         joueurs = self.get_joueurs(categorie)
 
-        table = QTableWidget(self)
-        self.populer_table(joueurs, table)
-        table.setStyleSheet("""background-color: #bbbcc0""")
-        table.setGeometry(45, 150, 705, 243)
-        table.show()
+        self.table_stats = QTableWidget(self)
+        self.populer_table(joueurs, self.table_stats)
+        self.table_stats.setStyleSheet("""background-color: #bbbcc0""")
+        self.table_stats.setGeometry(45, 150, 705, 243)
+        self.table_stats.show()
 
-        text_recherche = utils.show_barre_recherche(self)
+        self.text_recherche = utils.show_barre_recherche(self)
 
-        text_recherche.textChanged.connect(
-            lambda: self.rechercher_joueur(categorie, text_recherche.text(), table)
-            if len(text_recherche.text()) >= 3 or len(text_recherche.text()) == 0
+        self.text_recherche.textChanged.connect(
+            lambda: self.rechercher_joueur(categorie, self.text_recherche.text(), self.table_stats)
+            if len(self.text_recherche.text()) >= 3 or len(self.text_recherche.text()) == 0
             else None
         )
 
@@ -184,6 +184,24 @@ class Statistiques(QWidget):
                         "points_inferiorite_numerique": ligne["points_inferiorite_numerique"],
                         "buts_gagnants": ligne["buts_gagnants"]
                     }
+
+            if not joueurs:
+                joueurs["0"] = {
+                    "nom": "Aucun résultat",
+                    "equipe": "---",
+                    "position": "---",
+                    "matchs_joues": "---",
+                    "buts": "---",
+                    "passes": "---",
+                    "points": "---",
+                    "minutes_penalite": "---",
+                    "points_par_match": "---",
+                    "buts_avantage_numerique": "---",
+                    "points_avantage_numerique": "---",
+                    "buts_inferiorite_numerique": "---",
+                    "points_inferiorite_numerique": "---",
+                    "buts_gagnants": "---"
+                }
 
         self.populer_table(joueurs, table)
         table.setStyleSheet("""background-color: #bbbcc0""")

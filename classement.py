@@ -58,17 +58,17 @@ class Classement(QWidget):
 
         equipes = self.get_equipes(categorie)
 
-        table = QTableWidget(self)
-        self.populer_table(equipes, table)
-        table.setStyleSheet("""background-color: #bbbcc0""")
-        table.setGeometry(45, 150, 705, 243)
-        table.show()
+        self.table_classement = QTableWidget(self)
+        self.populer_table(equipes, self.table_classement)
+        self.table_classement.setStyleSheet("""background-color: #bbbcc0""")
+        self.table_classement.setGeometry(45, 150, 705, 243)
+        self.table_classement.show()
 
-        text_recherche = utils.show_barre_recherche(self)
+        self.text_recherche = utils.show_barre_recherche(self)
 
-        text_recherche.textChanged.connect(
-            lambda: self.rechercher_equipe(categorie, text_recherche.text(), table)
-            if len(text_recherche.text()) >= 3 or len(text_recherche.text()) == 0
+        self.text_recherche.textChanged.connect(
+            lambda: self.rechercher_equipe(categorie, self.text_recherche.text(), self.table_classement)
+            if len(self.text_recherche.text()) >= 3 or len(self.text_recherche.text()) == 0
             else None
         )
 
@@ -182,6 +182,26 @@ class Classement(QWidget):
                         "points_partie": ligne["points_partie"],
                         "points_penalites": ligne["points_penalites"],
                         "points_par_match": ligne["points_par_match"]
+                    }
+
+                if not equipes:
+                    equipes["0"] = {
+                        "nom_equipe": "Aucun résultat",
+                        "position": "---",
+                        "matchs_joues": "---",
+                        "points": "---",
+                        "victoires_total": "---",
+                        "victoires_fusillades": "---",
+                        "defaites": "---",
+                        "defaites_fusillades": "---",
+                        "nulles": "---",
+                        "buts_pour": "---",
+                        "buts_contre": "---",
+                        "differentiel": "---",
+                        "points_periode": "---",
+                        "points_partie": "---",
+                        "points_penalites": "---",
+                        "points_par_match": "---"
                     }
         self.populer_table(equipes, table)
         table.setStyleSheet("""background-color: #bbbcc0""")

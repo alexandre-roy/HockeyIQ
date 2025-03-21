@@ -23,22 +23,23 @@ class MainWindow(QMainWindow):
         self.setFixedSize(800, 500)
         self.stacked_widget = QStackedWidget()
 
-        self.connection = Connection(self)
+        self.connection = Connection(self, "")
         self.inscription = Inscription(self)
         self.overview = Overview(self)
         self.calendrier = Calendrier(self)
         self.classement = Classement(self)
         self.stats = Statistiques(self)
-        self.compte = Compte(self)
+        self.compte = None
 
-        self.setCentralWidget(self.compte)
 
-        # self.audio_output = QAudioOutput()
-        # self.player = QMediaPlayer()
-        # self.player.setAudioOutput(self.audio_output)
-        # self.player.setSource(QUrl.fromLocalFile("resources/sounds/nhl94.mp3"))
-        # self.player.mediaStatusChanged.connect(self.redemarrer_musique)
-        # self.player.play()
+        self.setCentralWidget(self.connection)
+
+        self.audio_output = QAudioOutput()
+        self.player = QMediaPlayer()
+        self.player.setAudioOutput(self.audio_output)
+        self.player.setSource(QUrl.fromLocalFile("resources/sounds/nhl94.mp3"))
+        self.player.mediaStatusChanged.connect(self.redemarrer_musique)
+        self.player.play()
 
     def redemarrer_musique(self, statut):
         """Redémarre la musique quand elle est terminée"""
@@ -48,7 +49,8 @@ class MainWindow(QMainWindow):
 
     def afficher_connection(self):
         """Affiche la page de connection"""
-        self.connection = Connection(self)
+        message = self.compte.message if self.compte else ""
+        self.connection = Connection(self, message)
         self.setCentralWidget(self.connection)
 
     def afficher_inscription(self):
@@ -78,5 +80,6 @@ class MainWindow(QMainWindow):
 
     def afficher_compte(self):
         """Affiche la page du compte"""
-        self.compte = Compte(self)
+        email = self.connection.email
+        self.compte = Compte(self, email)
         self.setCentralWidget(self.compte)

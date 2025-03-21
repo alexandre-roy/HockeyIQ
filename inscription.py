@@ -248,7 +248,7 @@ class Inscription(QWidget):
                                                 self.txt_pwd_inscription_confirm.text()))
 
         self.creation_success = QLabel(self)
-        self.creation_success.setGeometry(325, 473, 200, 20)
+        self.creation_success.setGeometry(315, 473, 200, 20)
         self.creation_success.setFont(jersey25_16)
         self.creation_success.setStyleSheet("color: #2bb537;")
         self.creation_success.setText("Compte créé avec succès !")

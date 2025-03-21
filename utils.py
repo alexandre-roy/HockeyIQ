@@ -12,39 +12,45 @@ def show_boutons_categories(parent, active):
 
     liens = [btn_b2_click, btn_b3_click]
 
-    for i in range(2):
-        offset = i * spacing
+    parent.bg_noir_1 = QPushButton(parent)
+    parent.bg_noir_1.setGeometry(start_x, 21, 40, 43)
+    parent.bg_noir_1.setStyleSheet("background-color: #2f3038; border-radius: 0px;")
 
-        bg_noir = QPushButton(parent)
-        bg_noir_2 = QPushButton(parent)
-        bg_fg = QPushButton(parent)
-        bg_fg_2 = QPushButton(parent)
+    parent.bg_noir_1_2 = QPushButton(parent)
+    parent.bg_noir_1_2.setGeometry(start_x - 3, 24, 46, 37)
+    parent.bg_noir_1_2.setStyleSheet("background-color: #2f3038; border-radius: 0px;")
 
-        color = "#bbbcc0"
+    parent.bg_fg_1 = QPushButton(parent)
+    parent.bg_fg_1.setGeometry(start_x + 3, 18, 40, 43)
+    parent.bg_fg_1.setStyleSheet("background-color: #f2bd41; border-radius: 0px;")
 
-        if i == active:
-            color = "#f2bd41"
-            bg_fg_2.setText('B2')
-        else:
-            bg_noir.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            bg_noir_2.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            bg_fg.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            bg_fg_2.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            bg_fg_2.clicked.connect(lambda _, i=i, p=parent: liens[i](p))
-            bg_fg_2.setText('B3')
+    parent.bg_fg_1_2 = QPushButton(parent)
+    parent.bg_fg_1_2.setGeometry(start_x, 21, 46, 37)
+    parent.bg_fg_1_2.setStyleSheet("background-color: #f2bd41; border-radius: 0px;")
+    parent.bg_fg_1_2.setFont(parent.jersey25_32)
+    parent.bg_fg_1_2.setText('B2')
+    parent.bg_fg_1_2.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+    parent.bg_fg_1_2.clicked.connect(lambda _, p=parent: liens[0](p))
 
-        bg_noir.setGeometry(start_x + offset, 21, 40, 43)
-        bg_noir.setStyleSheet("background-color: #2f3038; border-radius: 0px;")
+    parent.bg_noir_2 = QPushButton(parent)
+    parent.bg_noir_2.setGeometry(start_x + spacing, 21, 40, 43)
+    parent.bg_noir_2.setStyleSheet("background-color: #2f3038; border-radius: 0px;")
 
-        bg_noir_2.setGeometry(start_x - 3 + offset, 24, 46, 37)
-        bg_noir_2.setStyleSheet("background-color: #2f3038; border-radius: 0px;")
+    parent.bg_noir_2_2 = QPushButton(parent)
+    parent.bg_noir_2_2.setGeometry(start_x - 3 + spacing, 24, 46, 37)
+    parent.bg_noir_2_2.setStyleSheet("background-color: #2f3038; border-radius: 0px;")
 
-        bg_fg.setGeometry(start_x + 3 + offset, 18, 40, 43)
-        bg_fg.setStyleSheet(f"background-color: {color}; border-radius: 0px;")
+    parent.bg_fg_2 = QPushButton(parent)
+    parent.bg_fg_2.setGeometry(start_x + 3 + spacing, 18, 40, 43)
+    parent.bg_fg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
 
-        bg_fg_2.setGeometry(start_x + offset, 21, 46, 37)
-        bg_fg_2.setStyleSheet(f"background-color: {color}; border-radius: 0px;")
-        bg_fg_2.setFont(parent.jersey25_32)
+    parent.bg_fg_2_2 = QPushButton(parent)
+    parent.bg_fg_2_2.setGeometry(start_x + spacing, 21, 46, 37)
+    parent.bg_fg_2_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
+    parent.bg_fg_2_2.setFont(parent.jersey25_32)
+    parent.bg_fg_2_2.setText('B3')
+    parent.bg_fg_2_2.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+    parent.bg_fg_2_2.clicked.connect(lambda _, p=parent: liens[1](p))
 
 
 
@@ -153,8 +159,53 @@ def btn_account_clicked(parent):
 
 def btn_b2_click(parent):
     """Action lors du click sur le bouton B2"""
-    print("B2")
+    parent.bg_fg_1.setStyleSheet("background-color: #f2bd41; border-radius: 0px;")
+    parent.bg_fg_1_2.setStyleSheet("background-color: #f2bd41; border-radius: 0px;")
+    parent.bg_fg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
+    parent.bg_fg_2_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
+
+    if hasattr(parent, 'table_classement') and parent.table_classement:
+        parent.populer_table(parent.get_equipes('B2'), parent.table_classement)
+        parent.table_classement.setStyleSheet("""background-color: #bbbcc0""")
+        parent.text_recherche.setText("")
+    elif hasattr(parent, 'table_stats') and parent.table_stats:
+        parent.populer_table(parent.get_joueurs('B2'), parent.table_stats)
+        parent.table_stats.setStyleSheet("""background-color: #bbbcc0""")
+        parent.text_recherche.setText("")
+    elif hasattr(parent, 'populer_liste') and parent.liste_parties:
+        parent.populer_liste(parent.get_parties('B2'), parent.liste_parties, False)
+        parent.label_parties.setText("Parties à venir")
+        parent.label_parties_bg.setText("Parties à venir")
+        parent.bg_fgg.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
+        parent.bg_fgg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
+        parent.text_recherche.setText("")
+    elif hasattr(parent, 'populer_listes') and parent.list_equipes:
+        parent.populer_listes('B2', parent.list_equipes, parent.list_joueurs)
+        parent.text_recherche.setText("")
+
 
 def btn_b3_click(parent):
     """Action lors du click sur le bouton B3"""
-    print("B3")
+    parent.bg_fg_1.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
+    parent.bg_fg_1_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
+    parent.bg_fg_2.setStyleSheet("background-color: #f2bd41; border-radius: 0px;")
+    parent.bg_fg_2_2.setStyleSheet("background-color: #f2bd41; border-radius: 0px;")
+
+    if hasattr(parent, 'table_classement') and parent.table_classement:
+        parent.populer_table(parent.get_equipes('B3'), parent.table_classement)
+        parent.table_classement.setStyleSheet("""background-color: #bbbcc0""")
+        parent.text_recherche.setText("")
+    elif hasattr(parent, 'table_stats') and parent.table_stats:
+        parent.populer_table(parent.get_joueurs('B3'), parent.table_stats)
+        parent.table_stats.setStyleSheet("""background-color: #bbbcc0""")
+        parent.text_recherche.setText("")
+    elif hasattr(parent, 'populer_liste') and parent.liste_parties:
+        parent.populer_liste(parent.get_parties('B3'), parent.liste_parties, False)
+        parent.label_parties.setText("Parties à venir")
+        parent.label_parties_bg.setText("Parties à venir")
+        parent.bg_fgg.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
+        parent.bg_fgg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
+        parent.text_recherche.setText("")
+    elif hasattr(parent, 'populer_listes') and parent.list_equipes:
+        parent.populer_listes('B3', parent.list_equipes, parent.list_joueurs)
+        parent.text_recherche.setText("")

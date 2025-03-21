@@ -70,17 +70,17 @@ class Overview(QWidget):
         label_joueurs.setStyleSheet("color: #f2bd41;"
                                "background-color: transparent")
 
-        list_equipes = QListWidget(self)
-        list_equipes.setGeometry(45, 150, 340, 243)
-        list_equipes.setWordWrap(True)
-        list_equipes.setStyleSheet("""background-color: #bbbcc0""")
+        self.list_equipes = QListWidget(self)
+        self.list_equipes.setGeometry(45, 150, 340, 243)
+        self.list_equipes.setWordWrap(True)
+        self.list_equipes.setStyleSheet("""background-color: #bbbcc0""")
 
-        list_joueurs = QListWidget(self)
-        list_joueurs.setGeometry(410, 150, 340, 243)
-        list_joueurs.setWordWrap(True)
-        list_joueurs.setStyleSheet("""background-color: #bbbcc0""")
+        self.list_joueurs = QListWidget(self)
+        self.list_joueurs.setGeometry(410, 150, 340, 243)
+        self.list_joueurs.setWordWrap(True)
+        self.list_joueurs.setStyleSheet("""background-color: #bbbcc0""")
 
-        self.populer_listes(categorie, list_equipes, list_joueurs)
+        self.populer_listes(categorie, self.list_equipes, self.list_joueurs)
 
     def get_equipes(self, categorie):
         """Récupère les équipes dans la base de données"""
@@ -127,7 +127,7 @@ class Overview(QWidget):
         """Popule les listes du sommaire"""
         list_equipes.clear()
         list_joueurs.clear()
-        
+
         equipes = self.get_equipes(categorie)
 
         position = 0
