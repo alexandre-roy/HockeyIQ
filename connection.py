@@ -198,4 +198,4 @@ class Connection(QWidget):
 
         if valide:
             self.email = email
-            self.main_window.afficher_overview()
+            self.main_window.afficher_loading()

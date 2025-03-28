@@ -13,6 +13,7 @@ from calendrier import Calendrier
 from classement import Classement
 from stats import Statistiques
 from compte import Compte
+from loading import Loading
 
 class MainWindow(QMainWindow):
     """Fenêtre d'accueil / login"""
@@ -30,16 +31,16 @@ class MainWindow(QMainWindow):
         self.classement = Classement(self)
         self.stats = Statistiques(self)
         self.compte = None
+        self.loading = Loading(self)
 
+        self.setCentralWidget(self.loading)
 
-        self.setCentralWidget(self.connection)
-
-        self.audio_output = QAudioOutput()
-        self.player = QMediaPlayer()
-        self.player.setAudioOutput(self.audio_output)
-        self.player.setSource(QUrl.fromLocalFile("resources/sounds/nhl94.mp3"))
-        self.player.mediaStatusChanged.connect(self.redemarrer_musique)
-        self.player.play()
+        # self.audio_output = QAudioOutput()
+        # self.player = QMediaPlayer()
+        # self.player.setAudioOutput(self.audio_output)
+        # self.player.setSource(QUrl.fromLocalFile("resources/sounds/nhl94.mp3"))
+        # self.player.mediaStatusChanged.connect(self.redemarrer_musique)
+        # self.player.play()
 
     def redemarrer_musique(self, statut):
         """Redémarre la musique quand elle est terminée"""
@@ -83,3 +84,8 @@ class MainWindow(QMainWindow):
         email = self.connection.email
         self.compte = Compte(self, email)
         self.setCentralWidget(self.compte)
+
+    def afficher_loading(self):
+        """Affiche la page de chargement"""
+        self.loading = Loading(self)
+        self.setCentralWidget(self.loading)
