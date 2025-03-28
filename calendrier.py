@@ -20,9 +20,8 @@ class Calendrier(QWidget):
         """Interface graphique"""
         utils.show_menu_icons(self, 0)
 
+        self.categorie = 'B2'
         self.counter_all_games = 0
-
-        categorie = 'B2'
 
         QFontDatabase.addApplicationFont("Resources/Fonts/Jersey25-Regular.ttf")
         QFontDatabase.addApplicationFont("Resources/Fonts/Inter-VariableFont_opsz,wght.ttf")
@@ -64,14 +63,14 @@ class Calendrier(QWidget):
         self.liste_parties.setWordWrap(True)
         self.liste_parties.setStyleSheet("""background-color: #bbbcc0""")
 
-        parties = self.get_parties(categorie)
+        parties = self.get_parties(self.categorie)
 
         self.populer_liste(parties, self.liste_parties, False)
 
         self.text_recherche = utils.show_barre_recherche(self)
 
         self.text_recherche.textChanged.connect(
-            lambda: self.rechercher_match(categorie, self.text_recherche.text(), self.liste_parties)
+            lambda: self.rechercher_match(self.categorie, self.text_recherche.text(), self.liste_parties)
             if len(self.text_recherche.text()) >= 3 or len(self.text_recherche.text()) == 0
             else None
         )
@@ -95,6 +94,7 @@ class Calendrier(QWidget):
         self.bg_fgg_2.setFont(self.jersey25_32)
         self.bg_fgg_2.setIcon(QIcon("resources/images/switch.svg"))
         self.bg_fgg_2.setIconSize(self.bg_fgg_2.size())
+        self.bg_fgg_2.setToolTip("Filtrer les parties")
         self.bg_fgg_2.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.bg_fgg_2.clicked.connect(lambda: self.populer_liste(parties, self.liste_parties, True))
         self.bg_fgg_2.clicked.connect(lambda: self.toggle_parties_label(self.label_parties, self.label_parties_bg, parties, self.liste_parties))
@@ -106,12 +106,14 @@ class Calendrier(QWidget):
             label_parties_bg.setText("Toutes les parties")
             self.bg_fgg.setStyleSheet("background-color: #f2bd41; border-radius: 0px;")
             self.bg_fgg_2.setStyleSheet("background-color: #f2bd41; border-radius: 0px;")
+            parties = self.get_parties(self.categorie)
             self.populer_liste(parties, liste_parties, True)
         else:
             label_parties.setText("Parties à venir")
             label_parties_bg.setText("Parties à venir")
             self.bg_fgg.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
             self.bg_fgg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
+            parties = self.get_parties(self.categorie)
             self.populer_liste(parties, liste_parties, False)
 
     def get_parties(self, categorie):
@@ -146,7 +148,7 @@ class Calendrier(QWidget):
 
             if p['score_local'] is None:
                 if p["equipe_visiteur"] == "Aucun résultat":
-                    match_label = QLabel(f"{p['equipe_visiteur']}")  # No "@"
+                    match_label = QLabel(f"{p['equipe_visiteur']}")
                 else:
                     match_label = QLabel(f"{p['equipe_visiteur']} @ {p['equipe_local']}")
 

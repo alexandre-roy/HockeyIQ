@@ -2,9 +2,8 @@
 
 """Modules"""
 import re
-import hashlib
-from PyQt6.QtWidgets import QLabel, QWidget, QPushButton, QLineEdit
-from PyQt6.QtGui import QFontDatabase, QFont, QIcon, QCursor
+from PyQt6.QtWidgets import QLabel, QWidget, QPushButton, QLineEdit, QMessageBox
+from PyQt6.QtGui import QFontDatabase, QFont, QIcon, QCursor, QPixmap
 from PyQt6.QtCore import Qt
 import bd
 import utils
@@ -296,44 +295,6 @@ class Compte(QWidget):
         self.veuillez_remplir_pwd_2.setText("* Veuillez remplir ce champ")
         self.veuillez_remplir_pwd_2.hide()
 
-        barre_mdp_bg2 = QLabel(self)
-        barre_mdp_bg2.setGeometry(482, 103, 265, 40)
-        barre_mdp_bg2.setStyleSheet("""background-color: #2f3038""")
-
-        barre_mdp_bg = QLabel(self)
-        barre_mdp_bg.setGeometry(485, 100, 265, 40)
-        barre_mdp_bg.setStyleSheet("""background-color: #bbbcc0""")
-
-        self.barre_mdp = QLineEdit(self)
-        self.barre_mdp.setGeometry(490, 105, 220, 30)
-        self.barre_mdp.setStyleSheet("""background-color: #d9d9d9;
-                                        border-radius: 0px;
-                                        padding-left: 5px;""")
-        self.barre_mdp.setFont(self.jersey25_16)
-        self.barre_mdp.setPlaceholderText("ANCIEN MOT DE PASSE")
-        self.barre_mdp.setEchoMode(QLineEdit.EchoMode.Password)
-
-        barre_mdp_square = QLabel(self)
-        barre_mdp_square.setStyleSheet("""background-color: #bbbcc0;
-                                            border-radius: 0px;""")
-        barre_mdp_square.setGeometry(715, 105, 30, 30)
-
-        self.square = QLabel(self)
-        self.square.setStyleSheet("""background-color: #cc1d10;
-                                border-radius: 0px;""")
-        self.square.setGeometry(715, 105, 30, 30)
-
-        self.barre_mdp.textChanged.connect(
-            lambda: self.verifier_mdp(self.barre_mdp.text(), self.get_user_info("mot_de_passe"))
-        )
-
-        self.veuillez_remplir_pwd_3 = QLabel(self)
-        self.veuillez_remplir_pwd_3.setGeometry(485, 145, 250, 20)
-        self.veuillez_remplir_pwd_3.setFont(self.jersey25_16)
-        self.veuillez_remplir_pwd_3.setStyleSheet("color: #cc1d10;")
-        self.veuillez_remplir_pwd_3.setText("* Vous devez entrer votre mot de passe")
-        self.veuillez_remplir_pwd_3.hide()
-
         self.update_success = QLabel(self)
         self.update_success.setGeometry(315, 393, 200, 20)
         self.update_success.setFont(self.jersey25_16)
@@ -341,23 +302,31 @@ class Compte(QWidget):
         self.update_success.setText("Compte modifié avec succès !")
         self.update_success.hide()
 
-    def verifier_mdp(self, mdp, mdp_db):
-        """Véfifie le mot de passe"""
-        mdp_hash = hashlib.sha256(mdp.encode()).hexdigest()
-        if mdp_hash == mdp_db:
-            self.square.setStyleSheet("""background-color: #2bb537;
-                                border-radius: 0px;""")
-            return True
-        else:
-            self.square.setStyleSheet("""background-color: #cc1d10;
-                                border-radius: 0px;""")
-            return False
-
-
     def save_info(self, email, prenom, pwd, pwd2):
         """Sauvegarde les informations"""
-        self.veuillez_remplir_pwd_3.hide()
-        if self.verifier_mdp(self.barre_mdp.text(), self.get_user_info("mot_de_passe")):
+        confirmation = QMessageBox(self)
+        confirmation.setWindowTitle("Confirmation")
+        confirmation.setText("Sauvegarder les modifications ?")
+        confirmation.setIconPixmap(QIcon("resources/images/save.svg").pixmap(40, 40))
+        confirmation.setFont(QFont("jersey 25", 16))
+        confirmation.setStyleSheet("color: #2f3038;")
+
+        btn_oui = confirmation.addButton("Oui", QMessageBox.ButtonRole.YesRole)
+        btn_oui.setFont(QFont("jersey 25", 16))
+        btn_oui.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        btn_oui.setStyleSheet("background-color: #bbbcc0; border-radius: 0px; margin-bottom: 0px;")
+        btn_oui.setFixedSize(80, 30)
+
+
+        btn_annuler = confirmation.addButton("Annuler", QMessageBox.ButtonRole.RejectRole)
+        btn_annuler.setFont(QFont("jersey 25", 16))
+        btn_annuler.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        btn_annuler.setStyleSheet("background-color: #bbbcc0; border-radius: 0px; margin-bottom: 0px;")
+        btn_annuler.setFixedSize(80, 30)
+
+        confirmation.exec()
+
+        if confirmation.clickedButton() == btn_oui:
             valide = True
             email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
             pwd_regex = r'^(?=.*\d)[A-Za-z\d@#$%^&+=!]{5,}$'
@@ -373,6 +342,9 @@ class Compte(QWidget):
             self.erreur_pwd.hide()
             self.erreur_pwd_confirm.hide()
 
+            requete = ""
+            utilisateur_dictionnaire = {}
+
             if not email or email.isspace():
                 valide = False
                 self.veuillez_remplir_email.show()
@@ -387,39 +359,39 @@ class Compte(QWidget):
                 valide = False
                 self.erreur_nom.show()
 
-            if not pwd or pwd.isspace():
-                valide = False
-                self.veuillez_remplir_pwd.show()
-            elif not re.match(pwd_regex, pwd):
-                valide = False
-                self.erreur_pwd.show()
-
-            if not pwd2 or pwd2.isspace():
-                valide = False
-                self.veuillez_remplir_pwd_2.show()
-            elif pwd2 != pwd:
-                valide = False
-                self.erreur_pwd_confirm.show()
-
-            utilisateur_dictionnaire = {
-            "prenom" : prenom,
-            "email" : email,
-            "mot_de_passe" : pwd,
-            "email2": self.get_user_info("email")
-            }
-
-            with bd.creer_connexion() as connection:
-                with connection.get_curseur() as c:
-                    c.execute("SELECT id_utilisateur FROM utilisateurs WHERE email = %(email)s AND email != %(email2)s", utilisateur_dictionnaire)
-                    utilisateur_existant = c.fetchone()
-
-                    if utilisateur_existant:
-                        valide = False
-                        self.email_deja_utilise.show()
+            if not pwd and not pwd2:
+                utilisateur_dictionnaire = {
+                    "prenom": prenom,
+                    "email": email,
+                    "email2": self.get_user_info("email")
+                }
+                requete = """
+                    UPDATE utilisateurs
+                    SET prenom = %(prenom)s, email = %(email)s
+                    WHERE email = %(email2)s
+                """
+            else:
+                if not re.match(pwd_regex, pwd):
+                    valide = False
+                    self.erreur_pwd.show()
+                elif pwd2 != pwd:
+                    valide = False
+                    self.erreur_pwd_confirm.show()
+                else:
+                    utilisateur_dictionnaire = {
+                        "prenom": prenom,
+                        "email": email,
+                        "mot_de_passe": pwd,
+                        "email2": self.get_user_info("email")
+                    }
+                    requete = """
+                        UPDATE utilisateurs
+                        SET prenom = %(prenom)s, email = %(email)s, mot_de_passe = SHA2(%(mot_de_passe)s, 256)
+                        WHERE email = %(email2)s
+                    """
 
             if valide:
-                bd.sql("UPDATE utilisateurs SET prenom = %(prenom)s, email = %(email)s, mot_de_passe = SHA2(%(mot_de_passe)s, 256) "
-                            "WHERE email = %(email2)s", utilisateur_dictionnaire)
+                bd.sql(requete, utilisateur_dictionnaire)
 
                 self.message = "Compte modifié avec succès !"
                 self.main_window.afficher_connection()
@@ -428,14 +400,34 @@ class Compte(QWidget):
                 self.txt_nom.clear()
                 self.txt_pwd.clear()
                 self.txt_pwd_confirm.clear()
-                self.barre_mdp.clear()
-        else:
-            self.veuillez_remplir_pwd_3.show()
+            else:
+                return
 
     def supprimer_profil(self):
         """Supprime le profil"""
-        self.veuillez_remplir_pwd_3.hide()
-        if self.verifier_mdp(self.barre_mdp.text(), self.get_user_info("mot_de_passe")):
+        confirmation = QMessageBox(self)
+        confirmation.setWindowTitle("Confirmation")
+        confirmation.setText("Supprimer le compte ?")
+        confirmation.setIconPixmap(QIcon("resources/images/delete.svg").pixmap(40, 40))
+        confirmation.setFont(QFont("jersey 25", 16))
+        confirmation.setStyleSheet("color: #2f3038;")
+
+        btn_oui = confirmation.addButton("Oui", QMessageBox.ButtonRole.YesRole)
+        btn_oui.setFont(QFont("jersey 25", 16))
+        btn_oui.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        btn_oui.setStyleSheet("background-color: #bbbcc0; border-radius: 0px; margin-bottom: 0px;")
+        btn_oui.setFixedSize(80, 30)
+
+
+        btn_annuler = confirmation.addButton("Annuler", QMessageBox.ButtonRole.RejectRole)
+        btn_annuler.setFont(QFont("jersey 25", 16))
+        btn_annuler.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        btn_annuler.setStyleSheet("background-color: #bbbcc0; border-radius: 0px; margin-bottom: 0px;")
+        btn_annuler.setFixedSize(80, 30)
+
+        confirmation.exec()
+
+        if confirmation.clickedButton() == btn_oui:
             with bd.creer_connexion() as connection:
                 with connection.get_curseur() as cursor:
                     cursor.execute("""DELETE FROM utilisateurs WHERE email = %(email)s""",
@@ -445,7 +437,7 @@ class Compte(QWidget):
             self.message = "Compte supprimé avec succès !"
             self.main_window.afficher_connection()
         else:
-            self.veuillez_remplir_pwd_3.show()
+            return
 
     def get_user_info(self, element):
         """Récupère les informations de l'utilisateur"""

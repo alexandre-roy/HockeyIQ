@@ -172,15 +172,17 @@ def btn_b2_click(parent):
         parent.populer_table(parent.get_joueurs('B2'), parent.table_stats)
         parent.table_stats.setStyleSheet("""background-color: #bbbcc0""")
         parent.text_recherche.setText("")
-    elif hasattr(parent, 'populer_liste') and parent.liste_parties:
-        parent.populer_liste(parent.get_parties('B2'), parent.liste_parties, False)
+    elif hasattr(parent, 'populer_listes') and parent.list_equipes:
+        parent.populer_listes('B2', parent.list_equipes, parent.list_joueurs)
+    else:
+        parent.categorie = 'B2'
+        parties = parent.get_parties(parent.categorie)
+        parent.populer_liste(parties, parent.liste_parties, False)
         parent.label_parties.setText("Parties à venir")
         parent.label_parties_bg.setText("Parties à venir")
         parent.bg_fgg.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
         parent.bg_fgg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
         parent.text_recherche.setText("")
-    elif hasattr(parent, 'populer_listes') and parent.list_equipes:
-        parent.populer_listes('B2', parent.list_equipes, parent.list_joueurs)
 
 
 def btn_b3_click(parent):
@@ -198,12 +200,14 @@ def btn_b3_click(parent):
         parent.populer_table(parent.get_joueurs('B3'), parent.table_stats)
         parent.table_stats.setStyleSheet("""background-color: #bbbcc0""")
         parent.text_recherche.setText("")
-    elif hasattr(parent, 'populer_liste') and parent.liste_parties:
-        parent.populer_liste(parent.get_parties('B3'), parent.liste_parties, False)
+    elif hasattr(parent, 'populer_listes') and parent.list_equipes:
+        parent.populer_listes('B3', parent.list_equipes, parent.list_joueurs)
+    else:
+        parent.categorie = 'B3'
+        parties = parent.get_parties(parent.categorie)
+        parent.populer_liste(parties, parent.liste_parties, False)
         parent.label_parties.setText("Parties à venir")
         parent.label_parties_bg.setText("Parties à venir")
         parent.bg_fgg.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
         parent.bg_fgg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
         parent.text_recherche.setText("")
-    elif hasattr(parent, 'populer_listes') and parent.list_equipes:
-        parent.populer_listes('B3', parent.list_equipes, parent.list_joueurs)
