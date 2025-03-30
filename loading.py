@@ -2,6 +2,8 @@
 #pylint: disable = unused-import
 
 """Modules"""
+import sys
+from io import StringIO
 from PyQt6.QtWidgets import QLabel, QWidget, QPushButton
 from PyQt6.QtGui import QIcon, QFontDatabase, QFont, QPixmap, QTransform, QCursor
 from PyQt6.QtCore import QTimer, pyqtSignal, Qt
@@ -42,31 +44,19 @@ class Loading(QWidget):
         self.load_img.setIcon(QIcon("Resources/Images/loading.svg"))
         self.load_img.setIconSize(self.load_img.size())
 
-        bg_noir = QPushButton(self)
-        bg_noir_2 = QPushButton(self)
-        bg_fg = QPushButton(self)
-        bg_fg_2 = QPushButton(self)
-
-        bg_noir.setGeometry(320, 430, 140, 43)
-        bg_noir.setStyleSheet("background-color: #2f3038; border-radius: 0px;")
-
-        bg_noir_2.setGeometry(317, 433, 146, 37)
-        bg_noir_2.setStyleSheet("background-color: #2f3038; border-radius: 0px;")
-
-        bg_fg.setGeometry(323, 427, 140, 43)
-        bg_fg.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
-        bg_fg.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-
-        bg_fg_2.setGeometry(320, 430, 146, 37)
-        bg_fg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px; color: #2f3038;")
-        bg_fg_2.setText("Skip")
-        bg_fg_2.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        bg_fg_2.setFont((QFont(jersey25_32)))
-        bg_fg_2.clicked.connect(self.skip_scrape)
+        self.console_output = StringIO()
+        sys.stdout = self.console_output
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.rotate_icon)
+        self.timer.timeout.connect(self.check_console_message)
         self.timer.start(500)
+
+    def check_console_message(self):
+        """Check if a specific message has been printed to the console"""
+        console_output = sys.stdout.getvalue()
+        if "La base de données est maintenant à jour !" in console_output:
+            self.main_window.afficher_overview()
 
     def rotate_icon(self):
         """Animation de chargement"""
@@ -78,7 +68,3 @@ class Loading(QWidget):
         rotated_pixmap = original_pixmap.transformed(transform)
 
         self.load_img.setIcon(QIcon(rotated_pixmap))
-
-    def skip_scrape(self):
-        """Passer le scraping"""
-        self.main_window.afficher_overview()

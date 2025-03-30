@@ -14,6 +14,7 @@ from classement import Classement
 from stats import Statistiques
 from compte import Compte
 from loading import Loading
+from comparaison import Comparaison
 
 class MainWindow(QMainWindow):
     """Fenêtre d'accueil / login"""
@@ -31,9 +32,10 @@ class MainWindow(QMainWindow):
         self.classement = Classement(self)
         self.stats = Statistiques(self)
         self.compte = None
-        self.loading = Loading(self)
+        self.loading = None
+        self.comparaison = Comparaison(self)
 
-        self.setCentralWidget(self.loading)
+        self.setCentralWidget(self.comparaison)
 
         # self.audio_output = QAudioOutput()
         # self.player = QMediaPlayer()
@@ -89,3 +91,8 @@ class MainWindow(QMainWindow):
         """Affiche la page de chargement"""
         self.loading = Loading(self)
         self.setCentralWidget(self.loading)
+
+    def afficher_comparaison(self):
+        """Affiche la page de comparaison"""
+        self.comparaison = Comparaison(self)
+        self.setCentralWidget(self.comparaison)

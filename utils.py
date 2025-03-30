@@ -147,7 +147,7 @@ def btn_overview_clicked(parent):
 
 def btn_comp_clicked(parent):
     """Affiche la comparaison"""
-    print("Comparaison")
+    parent.main_window.afficher_comparaison()
 
 def btn_predict_clicked(parent):
     """Affiche les prédictions"""
