@@ -33,7 +33,7 @@ class MainWindow(QMainWindow):
         self.stats = Statistiques(self)
         self.compte = None
         self.loading = None
-        self.comparaison = Comparaison(self)
+        self.comparaison = Comparaison(self, None, None)
 
         self.setCentralWidget(self.comparaison)
 
@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
         self.loading = Loading(self)
         self.setCentralWidget(self.loading)
 
-    def afficher_comparaison(self):
+    def afficher_comparaison(self, equipe_1, equipe_2):
         """Affiche la page de comparaison"""
-        self.comparaison = Comparaison(self)
+        self.comparaison = Comparaison(self, equipe_1, equipe_2)
         self.setCentralWidget(self.comparaison)

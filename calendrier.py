@@ -67,6 +67,8 @@ class Calendrier(QWidget):
 
         self.populer_liste(parties, self.liste_parties, False)
 
+        self.liste_parties.itemClicked.connect(self.ouvrir_comp)
+
         self.text_recherche = utils.show_barre_recherche(self)
 
         self.text_recherche.textChanged.connect(
@@ -154,7 +156,7 @@ class Calendrier(QWidget):
 
                 date_label = QLabel(f"{p['date']} {p['heure']}")
             else:
-                match_label = QLabel(f"{p['equipe_visiteur']} ({p['score_visiteur']}) @ {p['equipe_local']} ({p['score_local']})")
+                match_label = QLabel(f"{p['equipe_visiteur']} @ {p['equipe_local']} ({p['score_visiteur']} - {p['score_local']})")
                 date_label = QLabel(f"{p['date']} {p['heure']} ")
 
             frame = QFrame()
@@ -217,3 +219,29 @@ class Calendrier(QWidget):
                     }
 
         self.populer_liste(parties, liste_parties, True)
+
+    def ouvrir_comp(self, item):
+        """Ouvre la page de comparaison avec les équipes sélectionnées"""
+        frame = self.liste_parties.itemWidget(item)
+        if not frame:
+            return
+
+        match_label = frame.layout().itemAt(0).layout().itemAt(0).widget()
+        if not match_label:
+            return
+
+        match_text = match_label.text()
+        if "@" not in match_text:
+            return
+
+        teams = match_text.split(" @ ")
+        if len(teams) < 2:
+            return
+
+        equipe_visiteur = teams[0].strip()
+        equipe_local = teams[1].strip()
+
+        if "(" in equipe_local:
+            equipe_local = equipe_local.split("(", 1)[0].strip()
+
+        self.main_window.afficher_comparaison(equipe_visiteur, equipe_local)

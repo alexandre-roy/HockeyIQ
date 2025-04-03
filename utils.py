@@ -147,7 +147,7 @@ def btn_overview_clicked(parent):
 
 def btn_comp_clicked(parent):
     """Affiche la comparaison"""
-    parent.main_window.afficher_comparaison()
+    parent.main_window.afficher_comparaison(None, None)
 
 def btn_predict_clicked(parent):
     """Affiche les prédictions"""
@@ -164,6 +164,8 @@ def btn_b2_click(parent):
     parent.bg_fg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
     parent.bg_fg_2_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
 
+    parent.categorie = 'B2'
+
     if hasattr(parent, 'table_classement') and parent.table_classement:
         parent.populer_table(parent.get_equipes('B2'), parent.table_classement)
         parent.table_classement.setStyleSheet("""background-color: #bbbcc0""")
@@ -175,7 +177,6 @@ def btn_b2_click(parent):
     elif hasattr(parent, 'populer_listes') and parent.list_equipes:
         parent.populer_listes('B2', parent.list_equipes, parent.list_joueurs)
     else:
-        parent.categorie = 'B2'
         parties = parent.get_parties(parent.categorie)
         parent.populer_liste(parties, parent.liste_parties, False)
         parent.label_parties.setText("Parties à venir")
@@ -192,6 +193,8 @@ def btn_b3_click(parent):
     parent.bg_fg_2.setStyleSheet("background-color: #f2bd41; border-radius: 0px;")
     parent.bg_fg_2_2.setStyleSheet("background-color: #f2bd41; border-radius: 0px;")
 
+    parent.categorie = 'B3'
+
     if hasattr(parent, 'table_classement') and parent.table_classement:
         parent.populer_table(parent.get_equipes('B3'), parent.table_classement)
         parent.table_classement.setStyleSheet("""background-color: #bbbcc0""")
@@ -203,7 +206,6 @@ def btn_b3_click(parent):
     elif hasattr(parent, 'populer_listes') and parent.list_equipes:
         parent.populer_listes('B3', parent.list_equipes, parent.list_joueurs)
     else:
-        parent.categorie = 'B3'
         parties = parent.get_parties(parent.categorie)
         parent.populer_liste(parties, parent.liste_parties, False)
         parent.label_parties.setText("Parties à venir")
