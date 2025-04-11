@@ -12,6 +12,7 @@ class Connection(QWidget):
         super().__init__()
         self.main_window = main_window
         self.email = ""
+        self.id_utilisateur = ""
         self.message = message
         self.initialiser_page_connection()
 
@@ -189,8 +190,10 @@ class Connection(QWidget):
                 c.execute("SELECT * FROM utilisateurs WHERE email = %(email)s " +
                           "AND mot_de_passe = (SHA2(%(mot_de_passe)s, 256))",
                            utilisateur_dictionnaire)
-                if c.fetchone():
+                resultat = c.fetchone()
+                if resultat:
                     valide = True
+                    self.id_utilisateur = resultat["id_utilisateur"]
                 elif not pwd or pwd.isspace():
                     self.veuillez_remplir_pwd.show()
                 else:

@@ -10,11 +10,13 @@ import utils
 
 class Comparaison(QWidget):
     """Page d'overview"""
-    def __init__(self, main_window, equipe_1, equipe_2):
+    def __init__(self, main_window, equipe_1, equipe_2, game_id, user_id):
         super().__init__()
         self.main_window = main_window
         self.equipe_1 = equipe_1
         self.equipe_2 = equipe_2
+        self.game_id = game_id
+        self.user_id = user_id
 
         self.initialiser_page_comparaison()
         self.montrer_page_equipes()
@@ -119,6 +121,9 @@ class Comparaison(QWidget):
         self.list_equipe2.setWordWrap(True)
         self.list_equipe2.setStyleSheet("""background-color: #bbbcc0""")
 
+        self.list_equipe1.itemClicked.connect(self.nom_equipe_click)
+        self.list_equipe2.itemClicked.connect(self.nom_equipe_click)
+
     def rechercher_joueur(self, text, liste):
         """Permet de rechercher un joueur"""
         joueurs = {}
@@ -160,7 +165,7 @@ class Comparaison(QWidget):
         if joueurs:
             _, first_player_data = next(iter(joueurs.items()))
 
-            joueur_name = QListWidgetItem(f"{first_player_data['nom']}")
+            joueur_name = QListWidgetItem(f"{first_player_data['nom'] }")
             joueur_name.setFont(self.jersey25_32)
             joueur_name.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             liste.addItem(joueur_name)
@@ -205,12 +210,12 @@ class Comparaison(QWidget):
         equipe1_stats = self.get_equipe(self.equipe_1)
         equipe2_stats = self.get_equipe(self.equipe_2)
 
-        team_name_item1 = QListWidgetItem(f"{self.equipe_1}")
+        team_name_item1 = QListWidgetItem(f"{self.equipe_1 if equipe1_stats else 'Visiteur'}")
         team_name_item1.setFont(self.jersey25_32)
         team_name_item1.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         list_equipe1.addItem(team_name_item1)
 
-        team_name_item2 = QListWidgetItem(f"{self.equipe_2}")
+        team_name_item2 = QListWidgetItem(f"{self.equipe_2 if equipe2_stats else 'Local'}")
         team_name_item2.setFont(self.jersey25_32)
         team_name_item2.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         list_equipe2.addItem(team_name_item2)
@@ -233,7 +238,55 @@ class Comparaison(QWidget):
             ("Points par Match", "points_par_match", "higher"),
         ]
 
+        score_team1 = 0
+        score_team2 = 0
+
+        poids_stats = {
+            "position": 3,
+            "matchs_joues": 1,
+            "points": 5,
+            "victoires_total": 3,
+            "victoires_fusillades": 1,
+            "defaites": 4,
+            "defaites_fusillades": 2,
+            "nulles": 1,
+            "buts_pour": 2,
+            "buts_contre": 2,
+            "differentiel": 5,
+            "points_periode": 1,
+            "points_partie": 1,
+            "points_penalites": 1,
+            "points_par_match": 6
+        }
+
         for label, key, comparison in stats_to_compare:
+            stat_team1 = equipe1_stats.get(key, 0)
+            stat_team2 = equipe2_stats.get(key, 0)
+            poid = poids_stats.get(key, 1)
+
+            if comparison == "higher":
+                score_team1 += stat_team1 * poid
+                score_team2 += stat_team2 * poid
+            elif comparison == "lower":
+                score_team1 += (1 / (stat_team1 + 1)) * poid
+                score_team2 += (1 / (stat_team2 + 1)) * poid
+
+        total_score = score_team1 + score_team2
+
+        if total_score > 0:
+            chance_to_win_team1 = (score_team1 / total_score) * 100
+            chance_to_win_team2 = (score_team2 / total_score) * 100
+        else:
+            chance_to_win_team1 = 50
+            chance_to_win_team2 = 50
+
+        stats_to_compare.insert(0, ("Chance de Gagner (%)", "chance_to_win", "higher"))
+
+        for stat in stats_to_compare:
+            label = stat[0]
+            key = stat[1]
+            comparison = stat[2]
+
             frame1 = QFrame()
             frame1.setStyleSheet("QFrame { background-color: #d9d9d9; margin: 3px; }")
             layout1 = QHBoxLayout(frame1)
@@ -244,8 +297,19 @@ class Comparaison(QWidget):
             layout2 = QHBoxLayout(frame2)
             layout2.setContentsMargins(10, 5, 10, 5)
 
-            stat1 = equipe1_stats.get(key, 0)
-            stat2 = equipe2_stats.get(key, 0)
+            if key == "chance_to_win":
+                stat1 = f"{round(chance_to_win_team1, 1)}%"
+                stat2 = f"{round(chance_to_win_team2, 1)}%"
+            else:
+                if key in equipe1_stats:
+                    stat1 = equipe1_stats[key]
+                else:
+                    stat1 = 0
+
+                if key in equipe2_stats:
+                    stat2 = equipe2_stats[key]
+                else:
+                    stat2 = 0
 
             label1 = QLabel(f"{label}: {stat1}")
             label2 = QLabel(f"{label}: {stat2}")
@@ -300,11 +364,8 @@ class Comparaison(QWidget):
         self.matchup.setStyleSheet("""background-color: #bbbcc0""")
         matchup_stats = self.get_matchup(self.equipe_1, self.equipe_2)
         self.matchup.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.matchup.setText(
-            f"Cette saison: {self.equipe_1} - {matchup_stats['victoires_equipe_1']} victoire(s) | "
-            f"{self.equipe_2} - {matchup_stats['victoires_equipe_2']} victoire(s) | "
-            f"Matchs nuls: {matchup_stats['nulles']}"
-        )
+        self.matchup.setText("Veuillez cliquer sur un des noms d'équipe pour entrer votre prédiction.")
+
         self.matchup.setFont(QFont(self.jersey25_16))
 
         self.populer_listes_comparaison(self.list_equipe1, self.list_equipe2)
@@ -475,3 +536,79 @@ class Comparaison(QWidget):
                     }
 
         return equipe_data
+
+    def nom_equipe_click(self, item):
+        """Action lors du click sur un nom d'équipe"""
+        game_id = self.game_id
+        if item.text() == self.equipe_1:
+            team_id = self.get_equipe(self.equipe_1)["nom_equipe"]
+        elif item.text() == self.equipe_2:
+            team_id = self.get_equipe(self.equipe_2)["nom_equipe"]
+        else:
+            return
+
+        equipe1_stats = self.get_equipe(self.equipe_1)
+        equipe2_stats = self.get_equipe(self.equipe_2)
+
+        score_team1 = equipe1_stats.get("points", 0) * 5 + equipe1_stats.get("differentiel", 0) * 5
+        score_team2 = equipe2_stats.get("points", 0) * 5 + equipe2_stats.get("differentiel", 0) * 5
+
+        if score_team1 > score_team2:
+            computer_prediction = self.equipe_1
+        else:
+            computer_prediction = self.equipe_2
+
+        self.ajouter_prediction(self.user_id, game_id, team_id, computer_prediction)
+
+    def ajouter_prediction(self, user_id, game_id, user_prediction, computer_prediction):
+        """Ajoute une prédiction dans la table predictions"""
+        with bd.creer_connexion() as connection:
+            with connection.get_curseur() as cursor:
+                cursor.execute("""
+                    SELECT 1
+                    FROM predictions
+                    WHERE user_id = %(user_id)s AND game_id = %(game_id)s
+                """, {
+                    "user_id": user_id,
+                    "game_id": game_id
+                })
+                result = cursor.fetchone()
+                if result:
+                    self.matchup.setText("Cette prédiction existe déjà.")
+                    return
+
+                cursor.execute("""
+                    SELECT score_local, score_visiteur
+                    FROM parties
+                    WHERE id_partie = %(game_id)s
+                """, {
+                    "game_id": game_id
+                })
+                game_result = cursor.fetchone()
+                if not game_result or game_result["score_local"] is not None or game_result["score_visiteur"] is not None:
+                    self.matchup.setText("Vous ne pouvez pas entrer une prédiction pour un match déjà joué.")
+                    return
+
+                cursor.execute("""
+                    INSERT INTO predictions (
+                        user_id,
+                        game_id,
+                        user_prediction,
+                        computer_prediction,
+                        user_correct,
+                        computer_correct
+                    ) VALUES (
+                        %(user_id)s,
+                        %(game_id)s,
+                        %(user_prediction)s,
+                        %(computer_prediction)s,
+                        NULL, 
+                        NULL
+                    )
+                """, {
+                    "user_id": user_id,
+                    "game_id": game_id,
+                    "user_prediction": user_prediction,
+                    "computer_prediction": computer_prediction
+                })
+        self.matchup.setText("Votre prédiction a été ajoutée avec succès !")

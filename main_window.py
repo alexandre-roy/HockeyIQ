@@ -15,6 +15,8 @@ from stats import Statistiques
 from compte import Compte
 from loading import Loading
 from comparaison import Comparaison
+from predictions import Predictions
+import bd
 
 class MainWindow(QMainWindow):
     """Fenêtre d'accueil / login"""
@@ -33,16 +35,16 @@ class MainWindow(QMainWindow):
         self.stats = Statistiques(self)
         self.compte = None
         self.loading = None
-        self.comparaison = Comparaison(self, None, None)
+        self.comparaison = Comparaison(self, None, None, None, None)
 
-        self.setCentralWidget(self.comparaison)
+        self.setCentralWidget(self.connection)
 
-        # self.audio_output = QAudioOutput()
-        # self.player = QMediaPlayer()
-        # self.player.setAudioOutput(self.audio_output)
-        # self.player.setSource(QUrl.fromLocalFile("resources/sounds/nhl94.mp3"))
-        # self.player.mediaStatusChanged.connect(self.redemarrer_musique)
-        # self.player.play()
+        self.audio_output = QAudioOutput()
+        self.player = QMediaPlayer()
+        self.player.setAudioOutput(self.audio_output)
+        self.player.setSource(QUrl.fromLocalFile("resources/sounds/nhl94.mp3"))
+        self.player.mediaStatusChanged.connect(self.redemarrer_musique)
+        self.player.play()
 
     def redemarrer_musique(self, statut):
         """Redémarre la musique quand elle est terminée"""
@@ -92,7 +94,59 @@ class MainWindow(QMainWindow):
         self.loading = Loading(self)
         self.setCentralWidget(self.loading)
 
-    def afficher_comparaison(self, equipe_1, equipe_2):
+    def afficher_comparaison(self, equipe_1, equipe_2, game_id):
         """Affiche la page de comparaison"""
-        self.comparaison = Comparaison(self, equipe_1, equipe_2)
+        user_id = self.connection.id_utilisateur
+        self.comparaison = Comparaison(self, equipe_1, equipe_2, game_id, user_id)
         self.setCentralWidget(self.comparaison)
+
+    def afficher_predictions(self):
+        """Affiche la page des prédictions"""
+        user_id = self.connection.id_utilisateur
+        print(f"{user_id}")
+        stats = []
+        with bd.creer_connexion() as connection:
+            with connection.get_curseur() as cursor:
+                cursor.execute("""
+                    SELECT
+                        user_id,
+                        game_id,
+                        user_prediction,
+                        computer_prediction,
+                        user_correct,
+                        computer_correct
+                    FROM predictions
+                    WHERE user_id = %(user_id)s
+                """, {
+                    "user_id": user_id
+                })
+
+                for ligne in cursor:
+                    stats.append({
+                        "user_id": ligne["user_id"],
+                        "game_id": ligne["game_id"],
+                        "user_prediction": ligne["user_prediction"],
+                        "computer_prediction": ligne["computer_prediction"],
+                        "user_correct": ligne["user_correct"],
+                        "computer_correct": ligne["computer_correct"]
+                    })
+
+                cursor.execute("""
+                SELECT
+                    COUNT(CASE WHEN user_correct = 1 THEN 1 END) AS user_correct_count,
+                    COUNT(CASE WHEN computer_correct = 1 THEN 1 END) AS computer_correct_count
+                FROM predictions
+                WHERE user_id = %(user_id)s
+            """, {
+                "user_id": user_id
+            })
+            result = cursor.fetchone()
+            user_correct_count = 0
+            computer_correct_count = 0
+
+            if result:
+                user_correct_count = result["user_correct_count"]
+                computer_correct_count = result["computer_correct_count"]
+
+        predictions = Predictions(self, stats, user_correct_count, computer_correct_count)
+        self.setCentralWidget(predictions)

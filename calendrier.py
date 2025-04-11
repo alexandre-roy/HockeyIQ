@@ -136,7 +136,8 @@ class Calendrier(QWidget):
                         "score_local": ligne["score_local"],
                         "fusillades": ligne["fusillades"],
                         "date": ligne["date"],
-                        "heure": ligne["heure"]
+                        "heure": ligne["heure"],
+                        "id_partie": ligne["id_partie"]
                     }
         return parties
 
@@ -181,6 +182,7 @@ class Calendrier(QWidget):
 
             item = QListWidgetItem()
             item.setSizeHint(frame.sizeHint())
+            item.setData(Qt.ItemDataRole.UserRole, p["id_partie"])
 
             liste.addItem(item)
             liste.setItemWidget(item, frame)
@@ -241,7 +243,6 @@ class Calendrier(QWidget):
         equipe_visiteur = teams[0].strip()
         equipe_local = teams[1].strip()
 
-        if "(" in equipe_local:
-            equipe_local = equipe_local.split("(", 1)[0].strip()
+        game_id = item.data(Qt.ItemDataRole.UserRole)
 
-        self.main_window.afficher_comparaison(equipe_visiteur, equipe_local)
+        self.main_window.afficher_comparaison(equipe_visiteur, equipe_local, game_id)

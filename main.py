@@ -11,8 +11,8 @@ def main():
 
     window.show()
 
-    # scrape_thread = threading.Thread(target=scrape.run)
-    # scrape_thread.start()
+    scrape_thread = threading.Thread(target=scrape.run)
+    scrape_thread.start()
 
     sys.exit(app.exec())
 

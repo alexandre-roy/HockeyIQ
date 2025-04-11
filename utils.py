@@ -147,11 +147,11 @@ def btn_overview_clicked(parent):
 
 def btn_comp_clicked(parent):
     """Affiche la comparaison"""
-    parent.main_window.afficher_comparaison(None, None)
+    parent.main_window.afficher_comparaison(None, None, None)
 
 def btn_predict_clicked(parent):
     """Affiche les prédictions"""
-    print("Prédictions")
+    parent.main_window.afficher_predictions()
 
 def btn_account_clicked(parent):
     """Affiche le compte"""
