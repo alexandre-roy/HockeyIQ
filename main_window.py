@@ -67,6 +67,7 @@ class MainWindow(QMainWindow):
         """Affiche la page d'overview"""
         self.overview = Overview(self)
         self.setCentralWidget(self.overview)
+        self.player.stop()
 
     def afficher_calendrier(self):
         """Affiche la page du calendrier"""

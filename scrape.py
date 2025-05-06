@@ -16,7 +16,6 @@ def run():
     """Ficher complet"""
     sql("DELETE FROM equipes")
     sql("DELETE FROM joueurs")
-    #sql("DELETE FROM parties")
 
     equipes_b2 = extraire_classement(get_url("classement_b2_h2425").json())
     equipes_b3 = extraire_classement(get_url("classement_b3_h2425").json())
@@ -45,8 +44,8 @@ def run():
     inserer_classement("B3", "H2425", equipes_b3)
     inserer_joueurs("B2", "H2425", statistiques_b2_result[0])
     inserer_joueurs("B3", "H2425", statistiques_b3_result[0])
-    #inserer_calendrier("B2", "H2425", calendrier_b2_result[0])
-    #inserer_calendrier("B3", "H2425", calendrier_b3_result[0])
+    inserer_calendrier("B2", "H2425", calendrier_b2_result[0])
+    inserer_calendrier("B3", "H2425", calendrier_b3_result[0])
 
     i = 0
     while i < 100:
@@ -325,8 +324,14 @@ def inserer_calendrier(categorie, saison, calendrier):
             "fusillades": partie_info['fusillades']
         }
         sql("""
-            INSERT INTO parties (id_partie, categorie, saison, equipe_local, equipe_visiteur, score_local, score_visiteur, fusillades, date, heure)
-            VALUES (NULL, %(categorie)s, %(saison)s, %(equipe_locale)s, %(equipe_visiteur)s, %(score_local)s, %(score_visiteur)s, %(fusillades)s, %(date)s, %(heure)s)
+            INSERT INTO parties (categorie, saison, equipe_local, equipe_visiteur, date, heure, score_local, score_visiteur, fusillades)
+            VALUES (%(categorie)s, %(saison)s, %(equipe_locale)s, %(equipe_visiteur)s, %(date)s, %(heure)s, %(score_local)s, %(score_visiteur)s, %(fusillades)s)
+            ON DUPLICATE KEY UPDATE
+                score_local = VALUES(score_local),
+                score_visiteur = VALUES(score_visiteur),
+                fusillades = VALUES(fusillades),
+                date = VALUES(date),
+                heure = VALUES(heure)
         """, calendrier_dictionnaire)
 
 def get_url(url):
