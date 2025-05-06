@@ -156,9 +156,11 @@ class Calendrier(QWidget):
                     match_label = QLabel(f"{p['equipe_visiteur']} @ {p['equipe_local']}")
 
                 date_label = QLabel(f"{p['date']} {p['heure']}")
+                is_clickable = True
             else:
                 match_label = QLabel(f"{p['equipe_visiteur']} @ {p['equipe_local']} ({p['score_visiteur']} - {p['score_local']})")
                 date_label = QLabel(f"{p['date']} {p['heure']} ")
+                is_clickable = False
 
             frame = QFrame()
             frame.setStyleSheet("QFrame { background-color: #d9d9d9; margin: 3px;}")
@@ -183,6 +185,9 @@ class Calendrier(QWidget):
             item = QListWidgetItem()
             item.setSizeHint(frame.sizeHint())
             item.setData(Qt.ItemDataRole.UserRole, p["id_partie"])
+
+            if not is_clickable:
+                item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
 
             liste.addItem(item)
             liste.setItemWidget(item, frame)
@@ -224,6 +229,9 @@ class Calendrier(QWidget):
 
     def ouvrir_comp(self, item):
         """Ouvre la page de comparaison avec les équipes sélectionnées"""
+        if not (item.flags() & Qt.ItemFlag.ItemIsEnabled):
+            return
+
         frame = self.liste_parties.itemWidget(item)
         if not frame:
             return
