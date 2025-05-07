@@ -17,6 +17,7 @@ class Predictions(QWidget):
         self.computer_correct_count = computer_correct_count
 
         self.initialiser_page_predictions()
+        self.update_predictions()
 
     def initialiser_page_predictions(self):
         """Interface graphique"""
@@ -276,3 +277,65 @@ class Predictions(QWidget):
             item.setSizeHint(frame.sizeHint())
             liste.insertItem(0, item)
             liste.setItemWidget(item, frame)
+
+    def update_predictions(self):
+        """Mets les prédictionss à jour dans la base de données en fonction des résultats"""
+        with bd.creer_connexion() as connection:
+            with connection.get_curseur() as cursor:
+                cursor.execute("""
+                    SELECT id_partie, equipe_local, equipe_visiteur, score_local, score_visiteur
+                    FROM parties
+                    WHERE score_local IS NOT NULL AND score_visiteur IS NOT NULL
+                """)
+                results = {}
+                for row in cursor:
+                    if row["score_local"] > row["score_visiteur"]:
+                        results[row["id_partie"]] = row["equipe_local"]
+                    elif row["score_visiteur"] > row["score_local"]:
+                        results[row["id_partie"]] = row["equipe_visiteur"]
+                    else:
+                        results[row["id_partie"]] = None
+
+                cursor.execute("""
+                    SELECT prediction_id, game_id, user_prediction, computer_prediction
+                    FROM predictions
+                    WHERE user_id = %(user_id)s
+                """, {
+                    "user_id": self.main_window.connection.id_utilisateur
+                })
+                predictions = cursor.fetchall()
+
+                user_correct_count = 0
+                computer_correct_count = 0
+
+                for prediction in predictions:
+                    game_id = prediction["game_id"]
+                    if game_id in results:
+                        actual_winner = results[game_id]
+                        user_correct = (prediction["user_prediction"] == actual_winner)
+                        computer_correct = (prediction["computer_prediction"] == actual_winner)
+
+                        if user_correct:
+                            user_correct_count += 1
+                        if computer_correct:
+                            computer_correct_count += 1
+
+                        cursor.execute("""
+                            UPDATE predictions
+                            SET user_correct = %(user_correct)s,
+                                computer_correct = %(computer_correct)s
+                            WHERE prediction_id = %(prediction_id)s
+                        """, {
+                            "user_correct": user_correct,
+                            "computer_correct": computer_correct,
+                            "prediction_id": prediction["prediction_id"]
+                        })
+
+            connection.commit()
+
+        self.user_correct_count = user_correct_count
+        self.computer_correct_count = computer_correct_count
+
+        self.label_user_number.setText(f"{self.user_correct_count}")
+        self.label_computer_number.setText(f"{self.computer_correct_count}")
+        self.make_green()

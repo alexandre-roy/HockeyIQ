@@ -123,7 +123,7 @@ class Calendrier(QWidget):
         parties = {}
         with bd.creer_connexion() as connection:
             with connection.get_curseur() as cursor:
-                cursor.execute("""SELECT id_partie, equipe_visiteur, equipe_local, score_visiteur, score_local, fusillades, date, heure FROM parties WHERE categorie = %(categorie)s""",
+                cursor.execute("""SELECT id_partie, equipe_visiteur, equipe_local, score_visiteur, score_local, fusillades, date, heure FROM parties WHERE categorie = %(categorie)s ORDER BY date, heure""",
                                 {
                                     "categorie": categorie
                                 })
