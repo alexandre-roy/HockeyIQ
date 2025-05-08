@@ -30,8 +30,8 @@ class Predictions(QWidget):
         self.label_computer_correct = QLabel(self)
         self.liste_historique = QListWidget(self)
 
-        QFontDatabase.addApplicationFont("Resources/Fonts/Jersey25-Regular.ttf")
-        QFontDatabase.addApplicationFont("Resources/Fonts/Inter-VariableFont_opsz,wght.ttf")
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Jersey25-Regular.ttf"))
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Inter-VariableFont_opsz,wght.ttf"))
 
         self.jersey25_64 = QFont("jersey 25", 64)
         self.jersey25_32 = QFont("jersey 25", 38)
@@ -88,7 +88,7 @@ class Predictions(QWidget):
 
         self.stats_bg_fg_2.setGeometry(670, 21, 46, 37)
         self.stats_bg_fg_2.setStyleSheet("background-color: #f2bd41; border-radius: 0px;")
-        self.stats_bg_fg_2.setIcon(QIcon("resources/images/analyse.svg"))
+        self.stats_bg_fg_2.setIcon(QIcon(utils.resource_path("resources/images/analyse.svg")))
         self.stats_bg_fg_2.setIconSize(self.stats_bg_fg_2.size())
         self.stats_bg_fg_2.clicked.connect(self.btn_stats_click)
 
@@ -115,7 +115,7 @@ class Predictions(QWidget):
 
         self.historique_bg_fg_2.setGeometry(730, 21, 46, 37)
         self.historique_bg_fg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
-        self.historique_bg_fg_2.setIcon(QIcon("resources/images/historique.svg"))
+        self.historique_bg_fg_2.setIcon(QIcon(utils.resource_path("resources/images/historique.svg")))
         self.historique_bg_fg_2.setIconSize(self.historique_bg_fg_2.size())
         self.historique_bg_fg_2.clicked.connect(self.btn_historique_click)
 

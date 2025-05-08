@@ -33,6 +33,14 @@ class VideoPopup(QDialog):
         self.media_player.setSource(QUrl.fromLocalFile(video_path))
         self.media_player.play()
 
+    def closeEvent(self, event):
+        """Handle cleanup when the dialog is closed"""
+        self.media_player.stop()
+        self.media_player.setVideoOutput(None)
+        self.media_player.deleteLater()
+        self.audio_output.deleteLater()
+        super().closeEvent(event)
+
 class Overview(QWidget):
     """Page d'overview"""
     def __init__(self, main_window):
@@ -47,8 +55,8 @@ class Overview(QWidget):
 
         categorie = 'B2'
 
-        QFontDatabase.addApplicationFont("Resources/Fonts/Jersey25-Regular.ttf")
-        QFontDatabase.addApplicationFont("Resources/Fonts/Inter-VariableFont_opsz,wght.ttf")
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Jersey25-Regular.ttf"))
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Inter-VariableFont_opsz,wght.ttf"))
 
         self.jersey25_64 = QFont("jersey 25", 64)
         self.jersey25_32 = QFont("jersey 25", 38)

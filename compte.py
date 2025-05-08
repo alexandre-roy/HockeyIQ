@@ -23,8 +23,8 @@ class Compte(QWidget):
 
         self.counter_edit = 0
 
-        QFontDatabase.addApplicationFont("Resources/Fonts/Jersey25-Regular.ttf")
-        QFontDatabase.addApplicationFont("Resources/Fonts/Inter-VariableFont_opsz,wght.ttf")
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Jersey25-Regular.ttf"))
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Inter-VariableFont_opsz,wght.ttf"))
 
         self.jersey25_64 = QFont("jersey 25", 64)
         self.jersey25_32 = QFont("jersey 25", 38)
@@ -73,7 +73,7 @@ class Compte(QWidget):
         self.bg_fg_2.setGeometry(670, 21, 46, 37)
         self.bg_fg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
         self.bg_fg_2.setFont(self.jersey25_32)
-        self.bg_fg_2.setIcon(QIcon("resources/images/save.svg"))
+        self.bg_fg_2.setIcon(QIcon(utils.resource_path("resources/images/save.svg")))
         self.bg_fg_2.setIconSize(self.bg_fg_2.size())
         self.bg_fg_2.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.bg_fg_2.setToolTip("Sauvegarder")
@@ -96,7 +96,7 @@ class Compte(QWidget):
         self.bg_fg_2_supprimer.setGeometry(730, 21, 46, 37)
         self.bg_fg_2_supprimer.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
         self.bg_fg_2_supprimer.setFont(self.jersey25_32)
-        self.bg_fg_2_supprimer.setIcon(QIcon("resources/images/delete.svg"))
+        self.bg_fg_2_supprimer.setIcon(QIcon(utils.resource_path("resources/images/delete.svg")))
         self.bg_fg_2_supprimer.setIconSize(self.bg_fg_2.size())
         self.bg_fg_2_supprimer.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.bg_fg_2_supprimer.setToolTip("Supprimer")
@@ -307,7 +307,7 @@ class Compte(QWidget):
         confirmation = QMessageBox(self)
         confirmation.setWindowTitle("Confirmation")
         confirmation.setText("Sauvegarder les modifications ?")
-        confirmation.setIconPixmap(QIcon("resources/images/save.svg").pixmap(40, 40))
+        confirmation.setIconPixmap(QIcon(utils.resource_path("resources/images/save.svg").pixmap(40, 40)))
         confirmation.setFont(QFont("jersey 25", 16))
         confirmation.setStyleSheet("color: #2f3038;")
 
@@ -408,7 +408,7 @@ class Compte(QWidget):
         confirmation = QMessageBox(self)
         confirmation.setWindowTitle("Confirmation")
         confirmation.setText("Supprimer le compte ?")
-        confirmation.setIconPixmap(QIcon("resources/images/delete.svg").pixmap(40, 40))
+        confirmation.setIconPixmap(QIcon(utils.resource_path("resources/images/delete.svg").pixmap(40, 40)))
         confirmation.setFont(QFont("jersey 25", 16))
         confirmation.setStyleSheet("color: #2f3038;")
 

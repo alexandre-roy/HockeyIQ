@@ -17,6 +17,7 @@ from loading import Loading
 from comparaison import Comparaison
 from predictions import Predictions
 import bd
+import utils
 
 class MainWindow(QMainWindow):
     """Fenêtre d'accueil / login"""
@@ -42,7 +43,7 @@ class MainWindow(QMainWindow):
         self.audio_output = QAudioOutput()
         self.player = QMediaPlayer()
         self.player.setAudioOutput(self.audio_output)
-        self.player.setSource(QUrl.fromLocalFile("resources/sounds/nhl94.mp3"))
+        self.player.setSource(QUrl.fromLocalFile(utils.resource_path("resources/sounds/nhl94.mp3")))
         self.player.mediaStatusChanged.connect(self.redemarrer_musique)
         self.player.play()
 

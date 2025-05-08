@@ -23,8 +23,8 @@ class Calendrier(QWidget):
         self.categorie = 'B2'
         self.counter_all_games = 0
 
-        QFontDatabase.addApplicationFont("Resources/Fonts/Jersey25-Regular.ttf")
-        QFontDatabase.addApplicationFont("Resources/Fonts/Inter-VariableFont_opsz,wght.ttf")
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Jersey25-Regular.ttf"))
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Inter-VariableFont_opsz,wght.ttf"))
 
         self.jersey25_64 = QFont("jersey 25", 64)
         self.jersey25_32 = QFont("jersey 25", 38)
@@ -94,7 +94,7 @@ class Calendrier(QWidget):
         self.bg_fgg_2.setGeometry(434, 107, 36, 27)
         self.bg_fgg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
         self.bg_fgg_2.setFont(self.jersey25_32)
-        self.bg_fgg_2.setIcon(QIcon("resources/images/switch.svg"))
+        self.bg_fgg_2.setIcon(QIcon(utils.resource_path("resources/images/switch.svg")))
         self.bg_fgg_2.setIconSize(self.bg_fgg_2.size())
         self.bg_fgg_2.setToolTip("Filtrer les parties")
         self.bg_fgg_2.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))

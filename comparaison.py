@@ -25,8 +25,8 @@ class Comparaison(QWidget):
         """Interface graphique"""
         utils.show_menu_icons(self, 4)
 
-        QFontDatabase.addApplicationFont("Resources/Fonts/Jersey25-Regular.ttf")
-        QFontDatabase.addApplicationFont("Resources/Fonts/Inter-VariableFont_opsz,wght.ttf")
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Jersey25-Regular.ttf"))
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Inter-VariableFont_opsz,wght.ttf"))
 
         self.jersey25_64 = QFont("jersey 25", 64)
         self.jersey25_32 = QFont("jersey 25", 38)
@@ -80,7 +80,7 @@ class Comparaison(QWidget):
 
         self.equipes_bg_fg_2.setGeometry(670, 21, 46, 37)
         self.equipes_bg_fg_2.setStyleSheet("background-color: #f2bd41; border-radius: 0px;")
-        self.equipes_bg_fg_2.setIcon(QIcon("resources/images/equipes.svg"))
+        self.equipes_bg_fg_2.setIcon(QIcon(utils.resource_path("resources/images/equipes.svg")))
         self.equipes_bg_fg_2.setIconSize(self.equipes_bg_fg_2.size())
         self.equipes_bg_fg_2.clicked.connect(self.btn_equipes_click)
 
@@ -107,7 +107,7 @@ class Comparaison(QWidget):
 
         self.joueurs_bg_fg_2.setGeometry(730, 21, 46, 37)
         self.joueurs_bg_fg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
-        self.joueurs_bg_fg_2.setIcon(QIcon("resources/images/joueur.svg"))
+        self.joueurs_bg_fg_2.setIcon(QIcon(utils.resource_path("resources/images/joueur.svg")))
         self.joueurs_bg_fg_2.setIconSize(self.joueurs_bg_fg_2.size())
         self.joueurs_bg_fg_2.clicked.connect(self.btn_joueurs_click)
 
@@ -400,7 +400,7 @@ class Comparaison(QWidget):
         self.joueur1_recherche_loupe.setStyleSheet("""background-color: #bbbcc0;
                                                         border-radius: 0px;""")
         self.joueur1_recherche_loupe.setGeometry(350, 365, 30, 30)
-        self.loupe = QPixmap("resources/images/search.svg")
+        self.loupe = QPixmap(utils.resource_path(utils.resource_path("resources/images/search.svg")))
         self.joueur1_recherche_loupe.setPixmap(self.loupe)
         self.joueur1_recherche_loupe.setScaledContents(True)
         self.joueur1_recherche_loupe.show()
@@ -428,7 +428,7 @@ class Comparaison(QWidget):
         self.joueur2_recherche_loupe.setStyleSheet("""background-color: #bbbcc0;
                                                         border-radius: 0px;""")
         self.joueur2_recherche_loupe.setGeometry(715, 365, 30, 30)
-        self.loupe = QPixmap("resources/images/search.svg")
+        self.loupe = QPixmap(utils.resource_path(utils.resource_path("resources/images/search.svg")))
         self.joueur2_recherche_loupe.setPixmap(self.loupe)
         self.joueur2_recherche_loupe.setScaledContents(True)
         self.joueur2_recherche_loupe.show()
@@ -602,7 +602,7 @@ class Comparaison(QWidget):
                         %(game_id)s,
                         %(user_prediction)s,
                         %(computer_prediction)s,
-                        NULL, 
+                        NULL,
                         NULL
                     )
                 """, {

@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QLabel, QPushButton, QLineEdit, QWidget
 from PyQt6.QtGui import QPixmap, QCursor, QFontDatabase, QFont, QShortcut, QKeySequence
 from PyQt6.QtCore import Qt
 import bd
+import utils
 
 class Inscription(QWidget):
     """Page d'inscription"""
@@ -16,8 +17,8 @@ class Inscription(QWidget):
 
     def initialiser_page_inscription(self):
         """Interface graphique"""
-        QFontDatabase.addApplicationFont("Resources/Fonts/Jersey25-Regular.ttf")
-        QFontDatabase.addApplicationFont("Resources/Fonts/Inter-VariableFont_opsz,wght.ttf")
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Jersey25-Regular.ttf"))
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Inter-VariableFont_opsz,wght.ttf"))
 
         jersey25_40 = QFont("jersey 25", 40)
         jersey25_16 = QFont("jersey 25", 16)
@@ -254,7 +255,7 @@ class Inscription(QWidget):
         self.creation_success.setText("Compte créé avec succès !")
         self.creation_success.hide()
 
-        logo = QPixmap("resources/images/logo.png")
+        logo = QPixmap(utils.resource_path("resources/images/logo.png"))
         logo_label.setPixmap(logo)
         logo_label.setScaledContents(True)
 

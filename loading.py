@@ -7,6 +7,7 @@ from io import StringIO
 from PyQt6.QtWidgets import QLabel, QWidget, QPushButton
 from PyQt6.QtGui import QIcon, QFontDatabase, QFont, QPixmap, QTransform, QCursor
 from PyQt6.QtCore import QTimer, pyqtSignal, Qt
+import utils
 
 class Loading(QWidget):
     """Fenêtre qui s'afciche pendant le chargement"""
@@ -20,15 +21,14 @@ class Loading(QWidget):
     def initialiser_page_loading(self):
         """Interface graphique"""
 
-        QFontDatabase.addApplicationFont("Resources/Fonts/Jersey25-Regular.ttf")
-        QFontDatabase.addApplicationFont("Resources/Fonts/Inter-VariableFont_opsz,wght.ttf")
-
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Jersey25-Regular.ttf"))
+        QFontDatabase.addApplicationFont(utils.resource_path("resources/fonts/Inter-VariableFont_opsz,wght.ttf"))
         jersey25_32 = QFont("jersey 25", 32)
 
         logo_label = QLabel(self)
         logo_label.setGeometry(100, 20, 600, 140)
 
-        logo = QPixmap("resources/images/logo.png")
+        logo = QPixmap(utils.resource_path("resources/images/logo.png"))
         logo_label.setPixmap(logo)
         logo_label.setScaledContents(True)
 
@@ -41,7 +41,7 @@ class Loading(QWidget):
         self.load_img = QPushButton(self)
         self.load_img.setGeometry(375, 310, 40, 40)
         self.load_img.setStyleSheet("border-radius: 0px;")
-        self.load_img.setIcon(QIcon("Resources/Images/loading.svg"))
+        self.load_img.setIcon(QIcon(utils.resource_path("resources/images/loading.svg")))
         self.load_img.setIconSize(self.load_img.size())
 
         self.console_output = StringIO()
@@ -60,7 +60,7 @@ class Loading(QWidget):
 
     def rotate_icon(self):
         """Animation de chargement"""
-        original_pixmap = QPixmap("Resources/Images/loading.svg")
+        original_pixmap = QPixmap(utils.resource_path("resources/images/loading.svg"))
 
         self.rotation_angle = (self.rotation_angle + 90) % 360
 

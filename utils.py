@@ -1,6 +1,8 @@
 #pylint: disable = no-name-in-module
 
 """Modules"""
+import sys
+import os
 from PyQt6.QtWidgets import QPushButton, QLabel, QLineEdit
 from PyQt6.QtGui import QIcon, QCursor, QPixmap
 from PyQt6.QtCore import Qt
@@ -97,7 +99,7 @@ def show_menu_icons(parent, active):
 
         bg_fg_2.setGeometry(start_x + offset, 430, 46, 37)
         bg_fg_2.setStyleSheet(f"background-color: {color}; border-radius: 0px;")
-        bg_fg_2.setIcon(QIcon(icons[i]))
+        bg_fg_2.setIcon(QIcon(resource_path(icons[i])))
         bg_fg_2.setIconSize(bg_fg_2.size())
 
 def show_barre_recherche(parent):
@@ -123,7 +125,7 @@ def show_barre_recherche(parent):
                                         border-radius: 0px;""")
     barre_recherche_loupe.setGeometry(715, 105, 30, 30)
 
-    loupe = QPixmap("resources/images/search.svg")
+    loupe = QPixmap(resource_path("resources/images/search.svg"))
     barre_recherche_loupe.setPixmap(loupe)
     barre_recherche_loupe.setScaledContents(True)
 
@@ -213,3 +215,8 @@ def btn_b3_click(parent):
         parent.bg_fgg.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
         parent.bg_fgg_2.setStyleSheet("background-color: #bbbcc0; border-radius: 0px;")
         parent.text_recherche.setText("")
+
+def resource_path(relative_path):
+    """Get the absolute path to a resource, works for PyInstaller."""
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
