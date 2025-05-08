@@ -18,7 +18,7 @@ HockeyIQ est une application interactive conçue pour les amateurs de dek hockey
 - **Framework GUI** : PyQt6
 - **Base de données** : MySQL
 - **Web scraping** : Selenium, BeautifulSoup
-- **Autres bibliothèques** : Requests, mysql.connector, mysql-connector-python
+- **Autres bibliothèques** : Requests, mysql.connector, mysql-connector-python, dotenv
 
 ---
 
@@ -85,3 +85,12 @@ Le projet est complété, mais avec certaines fonctionnalités qui pourraient ê
    - Sélectionnez **Python** comme environnement.
    - Assurez-vous que le chemin du fichier principal (`main.py`) est correctement configuré dans le fichier `launch.json`.
 5. Appuyez sur **F5** pour lancer le projet.
+
+## 🔑 Compte Test
+
+Pour tester l'application, vous pouvez utiliser le compte suivant :
+
+- **Email** : test@gmail.com
+- **Mot de passe** : test
+
+Ce compte est préconfiguré pour vous permettre d'explorer les fonctionnalités de l'application sans avoir à créer un compte.

@@ -1,2 +1,0 @@
-Pour créer l'executable du projet:
-    pyinstaller --onefile --windowed main.py --add-data "resources:resources"
