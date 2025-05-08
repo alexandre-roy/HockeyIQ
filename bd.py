@@ -1,15 +1,19 @@
 """Modules"""
+import os
 import contextlib
 import types
 import mysql.connector
+from dotenv import load_dotenv
+
+load_dotenv()
 
 @contextlib.contextmanager
 def creer_connexion():
     """Création de la connection"""
     conn = mysql.connector.connect(
-        user="root",
-        password="Alexrr253977!",
-        host="localhost",
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST"),
         database="HockeyIQ"
     )
     conn.get_curseur = types.MethodType(get_curseur, conn)
